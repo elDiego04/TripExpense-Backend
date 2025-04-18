@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/TripExpense/TripExpense.iml" filepath="$PROJECT_DIR$/TripExpense/TripExpense.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/TripExpense-Backend.iml" filepath="$PROJECT_DIR$/.idea/TripExpense-Backend.iml" />
+    </modules>
+  </component>
+</project>
