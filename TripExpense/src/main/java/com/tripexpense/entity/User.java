@@ -37,8 +37,7 @@ public class User {
     private String lastName;
 
     @Column(unique = true)
-    @Pattern(regexp = "^\\+?[0-9]{10,15}$",
-            message = "El teléfono debe tener entre 10 y 15 dígitos")
+    @Pattern(regexp = "^[0-9]{10,15}$", message = "El teléfono debe tener entre 10 y 15 dígitos")
     private String phone;
 
     @CreationTimestamp
