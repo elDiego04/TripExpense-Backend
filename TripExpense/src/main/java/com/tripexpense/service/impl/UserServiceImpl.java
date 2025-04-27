@@ -1,5 +1,7 @@
 package com.tripexpense.service.impl;
 
+import com.tripexpense.dto.LoginRequestDTO;
+import com.tripexpense.dto.LoginResponseDTO;
 import com.tripexpense.dto.UserDTO;
 import com.tripexpense.entity.User;
 import com.tripexpense.repository.UserRepository;
@@ -76,6 +78,34 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new RuntimeException("Usuario no encontrado");
         }
+    }
+
+    @Override
+    public UserDTO registerUser(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())){
+            throw new RuntimeException("El email ya se encuentra registrado");
+        }
+        User user = new User();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
+        user.setPassword(userDTO.getPassword());
+
+        return convertToDTO(userRepository.save(user));
+    }
+
+    @Override
+    public LoginResponseDTO loginUser(LoginRequestDTO loginRequestDTO) {
+        Optional<User> userOpt = userRepository.findByEmail(loginRequestDTO.getEmail());
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            if (user.getPassword().equals(loginRequestDTO.getPassword())) {
+                UserDTO userDTO = convertToDTO(user);
+                return new LoginResponseDTO("Login successful", userDTO);
+            }
+        }
+        throw new RuntimeException("Invalid email or password");
     }
 
     private UserDTO convertToDTO(User user){
