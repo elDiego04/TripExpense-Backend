@@ -1,5 +1,6 @@
 package com.tripexpense.service.impl;
 
+import com.tripexpense.dto.PopularDestinationDTO;
 import com.tripexpense.dto.PopularSearchDTO;
 import com.tripexpense.dto.SearchQueryDTO;
 import com.tripexpense.entity.City;
@@ -86,18 +87,6 @@ public class SearchQueryServiceImpl implements SearchQueryService {
             throw new RuntimeException("Search query not found with id: " + id);
         }
         searchQueryRepository.deleteById(id);
-    }
-
-    @Override
-    public List<PopularSearchDTO> getPopularDestinations() {
-        List<Object[]> results = searchQueryRepository.findPopularDestinations();
-        return results.stream()
-                .map(result -> new PopularSearchDTO(
-                        ((City) result[0]).getCityId(),
-                        ((City) result[0]).getName(),
-                        ((Long) result[1]).intValue()
-                ))
-                .collect(Collectors.toList());
     }
 
     private SearchQueryDTO convertToDTO(SearchQuery searchQuery) {

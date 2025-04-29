@@ -1,6 +1,5 @@
 package com.tripexpense.controller;
 
-import com.tripexpense.dto.PopularSearchDTO;
 import com.tripexpense.dto.SearchQueryDTO;
 import com.tripexpense.repository.SearchQueryRepository;
 import com.tripexpense.service.impl.SearchQueryServiceImpl;
@@ -116,7 +115,7 @@ public class SearchQueryController {
         }
     }
 
-    @GetMapping("/popular-destinations")
+/*    @GetMapping("/popular-destinations")
     public ResponseEntity<?> getPopularDestinations() {
         try {
             List<PopularSearchDTO> popularDestinations = searchQueryService.getPopularDestinations();
@@ -133,7 +132,7 @@ public class SearchQueryController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error al obtener destinos populares: " + e.getMessage());
         }
-    }
+    }*/
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSearchQuery(@PathVariable Long id) {
