@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
-        user.setPassword(userDTO.getPassword());
+        user.setPhone(userDTO.getPhone());
 
 
         return convertToDTO(userRepository.save(user));
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
             user.setLastName(userDTO.getLastName());
             user.setEmail(userDTO.getEmail());
             user.setPassword(userDTO.getPassword());
-            user.setPassword(userDTO.getPassword());
+            user.setPhone(userDTO.getPhone());
 
             return convertToDTO(userRepository.save(user));
         } else {
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
-        user.setPassword(userDTO.getPassword());
+        user.setPhone(userDTO.getPhone());
 
         return convertToDTO(userRepository.save(user));
     }

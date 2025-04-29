@@ -1,78 +1,84 @@
 package com.tripexpense.dto;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class SearchQueryDTO {
 
-    private Long searchId;
-
-    @NotNull
-    private CityDTO originCity;
-
-    @NotNull
-    private CityDTO destinationCity;
-
-    @NotNull
-    @FutureOrPresent
+    private Long id;
+    private Long userId;
+    private Long originCityId;
+    private String originCityName;
+    private Long destinationCityId;
+    private String destinationCityName;
     private LocalDate departureDate;
-
-    @Future
     private LocalDate returnDate;
-
-    @NotNull
-    @Min(1)
     private Integer adults;
-
-    @NotNull
-    @Min(0)
     private Integer children;
-
     private LocalDateTime searchDate;
-
-    private UserDTO user;
 
     public SearchQueryDTO(){}
 
-    public SearchQueryDTO(Long searchId, CityDTO originCity, CityDTO destinationCity, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, LocalDateTime searchDate, UserDTO user) {
-        this.searchId = searchId;
-        this.originCity = originCity;
-        this.destinationCity = destinationCity;
+    public SearchQueryDTO(Long id, Long userId, Long originCityId, String originCityName, Long destinationCityId, String destinationCityName, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, LocalDateTime searchDate) {
+        this.id = id;
+        this.userId = userId;
+        this.originCityId = originCityId;
+        this.originCityName = originCityName;
+        this.destinationCityId = destinationCityId;
+        this.destinationCityName = destinationCityName;
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.adults = adults;
         this.children = children;
         this.searchDate = searchDate;
-        this.user = user;
     }
 
-    public Long getSearchId() {
-        return searchId;
+    public Long getId() {
+        return id;
     }
 
-    public void setSearchId(Long searchId) {
-        this.searchId = searchId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public CityDTO getOriginCity() {
-        return originCity;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setOriginCity(CityDTO originCity) {
-        this.originCity = originCity;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public CityDTO getDestinationCity() {
-        return destinationCity;
+    public Long getOriginCityId() {
+        return originCityId;
     }
 
-    public void setDestinationCity(CityDTO destinationCity) {
-        this.destinationCity = destinationCity;
+    public void setOriginCityId(Long originCityId) {
+        this.originCityId = originCityId;
+    }
+
+    public String getOriginCityName() {
+        return originCityName;
+    }
+
+    public void setOriginCityName(String originCityName) {
+        this.originCityName = originCityName;
+    }
+
+    public Long getDestinationCityId() {
+        return destinationCityId;
+    }
+
+    public void setDestinationCityId(Long destinationCityId) {
+        this.destinationCityId = destinationCityId;
+    }
+
+    public String getDestinationCityName() {
+        return destinationCityName;
+    }
+
+    public void setDestinationCityName(String destinationCityName) {
+        this.destinationCityName = destinationCityName;
     }
 
     public LocalDate getDepartureDate() {
@@ -113,13 +119,5 @@ public class SearchQueryDTO {
 
     public void setSearchDate(LocalDateTime searchDate) {
         this.searchDate = searchDate;
-    }
-
-    public UserDTO getUser() {
-        return user;
-    }
-
-    public void setUser(UserDTO user) {
-        this.user = user;
     }
 }

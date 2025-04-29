@@ -1,97 +1,61 @@
 package com.tripexpense.dto;
 
-import com.tripexpense.enums.TravelPlanStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.*;
+import com.tripexpense.enums.PlanStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class TravelPlanDTO {
 
-    private Long travelPlanId;
-
-    @NotNull
-    private UserDTO user;
-
-    @NotBlank
-    @Size(max = 100)
+    private Long id;
+    private Long userId;
     private String title;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
-
-    @NotNull
-    @FutureOrPresent
     private LocalDate departureDate;
-
-    @Future
     private LocalDate returnDate;
-
-    @NotNull
-    @Min(1)
     private Integer adults;
-
-    @NotNull
-    @Min(0)
     private Integer children;
-
-    @PositiveOrZero
-    private Double totalCost;
-
-    @Enumerated(EnumType.STRING)
-    private TravelPlanStatus status;
-
-    @NotNull
-    private CityDTO destinationCity;
-
-
-    private FlightDTO flight;
-
-
-    private HotelDTO hotel;
-
-    private List<ActivityDTO> activities;
-
-    @Column(columnDefinition = "TEXT")
-    private String notes;
+    private PlanStatus status;
+    private Long flightId;
+    private Long hotelId;
+    private List<Long> activityIds;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public TravelPlanDTO(){}
 
-    public TravelPlanDTO(Long travelPlanId, UserDTO user, String title, String description, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, Double totalCost, TravelPlanStatus status, CityDTO destinationCity, FlightDTO flight, HotelDTO hotel, List<ActivityDTO> activities, String notes) {
-        this.travelPlanId = travelPlanId;
-        this.user = user;
+    public TravelPlanDTO(Long id, Long userId, String title, String description, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, PlanStatus status, Long flightId, Long hotelId, List<Long> activityIds, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.userId = userId;
         this.title = title;
         this.description = description;
         this.departureDate = departureDate;
         this.returnDate = returnDate;
         this.adults = adults;
         this.children = children;
-        this.totalCost = totalCost;
         this.status = status;
-        this.destinationCity = destinationCity;
-        this.flight = flight;
-        this.hotel = hotel;
-        this.activities = activities;
-        this.notes = notes;
+        this.flightId = flightId;
+        this.hotelId = hotelId;
+        this.activityIds = activityIds;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public Long getTravelPlanId() {
-        return travelPlanId;
+    public Long getId() {
+        return id;
     }
 
-    public void setTravelPlanId(Long travelPlanId) {
-        this.travelPlanId = travelPlanId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public UserDTO getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String getTitle() {
@@ -142,59 +106,51 @@ public class TravelPlanDTO {
         this.children = children;
     }
 
-    public Double getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(Double totalCost) {
-        this.totalCost = totalCost;
-    }
-
-    public TravelPlanStatus getStatus() {
+    public PlanStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TravelPlanStatus status) {
+    public void setStatus(PlanStatus status) {
         this.status = status;
     }
 
-    public CityDTO getDestinationCity() {
-        return destinationCity;
+    public Long getFlightId() {
+        return flightId;
     }
 
-    public void setDestinationCity(CityDTO destinationCity) {
-        this.destinationCity = destinationCity;
+    public void setFlightId(Long flightId) {
+        this.flightId = flightId;
     }
 
-    public FlightDTO getFlight() {
-        return flight;
+    public Long getHotelId() {
+        return hotelId;
     }
 
-    public void setFlight(FlightDTO flight) {
-        this.flight = flight;
+    public void setHotelId(Long hotelId) {
+        this.hotelId = hotelId;
     }
 
-    public HotelDTO getHotel() {
-        return hotel;
+    public List<Long> getActivityIds() {
+        return activityIds;
     }
 
-    public void setHotel(HotelDTO hotel) {
-        this.hotel = hotel;
+    public void setActivityIds(List<Long> activityIds) {
+        this.activityIds = activityIds;
     }
 
-    public List<ActivityDTO> getActivities() {
-        return activities;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setActivities(List<ActivityDTO> activities) {
-        this.activities = activities;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public String getNotes() {
-        return notes;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

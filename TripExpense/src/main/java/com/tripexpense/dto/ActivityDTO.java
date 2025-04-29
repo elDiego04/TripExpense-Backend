@@ -1,62 +1,31 @@
 package com.tripexpense.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.validation.constraints.*;
-
 import java.util.List;
 
 public class ActivityDTO {
 
     private Long activityId;
-
-    @NotNull
-    private CityDTO city;
-
-    @NotBlank
-    @Size(max = 100)
     private String name;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
-
-    @NotBlank
-    @Size(max = 50)
+    private Long cityId;
+    private String cityName;
     private String category;
-
-    @NotNull
-    @Positive
-    private Integer duration;
-
-    @NotNull
-    @PositiveOrZero
+    private Integer duration; // in minutes
     private Double price;
-
-    @NotBlank
-    @Size(max = 255)
     private String location;
-
-    @ElementCollection
     private List<String> availabilityDates;
-
-    @NotNull
-    @Min(1)
     private Integer minPeople;
-
-    @NotNull
-    @Min(1)
     private Integer maxPeople;
-
-    @Size(max = 50)
     private String difficultyLevel;
 
     public ActivityDTO(){}
 
-    public ActivityDTO(Long activityId, CityDTO city, String name, String description, String category, Integer duration, Double price, String location, List<String> availabilityDates, Integer minPeople, Integer maxPeople, String difficultyLevel) {
+    public ActivityDTO(Long activityId, String name, String description, Long cityId, String cityName, String category, Integer duration, Double price, String location, List<String> availabilityDates, Integer minPeople, Integer maxPeople, String difficultyLevel) {
         this.activityId = activityId;
-        this.city = city;
         this.name = name;
         this.description = description;
+        this.cityId = cityId;
+        this.cityName = cityName;
         this.category = category;
         this.duration = duration;
         this.price = price;
@@ -75,14 +44,6 @@ public class ActivityDTO {
         this.activityId = activityId;
     }
 
-    public CityDTO getCity() {
-        return city;
-    }
-
-    public void setCity(CityDTO city) {
-        this.city = city;
-    }
-
     public String getName() {
         return name;
     }
@@ -97,6 +58,22 @@ public class ActivityDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public String getCategory() {

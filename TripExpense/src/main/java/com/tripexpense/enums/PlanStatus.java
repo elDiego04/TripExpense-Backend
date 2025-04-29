@@ -1,5 +1,5 @@
 package com.tripexpense.enums;
 
-public enum TravelPlanStatus {
+public enum PlanStatus {
     PLANNING, BOOKED, COMPLETED, CANCELLED
 }

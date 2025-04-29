@@ -1,74 +1,40 @@
 package com.tripexpense.dto;
 
 import com.tripexpense.enums.FlightClass;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class FlightDTO {
     private Long flightId;
-
-    @NotBlank(message = "La aerolínea es obligatoria")
-    @Size(max = 100)
     private String airline;
-
-    @NotBlank(message = "El número de vuelo es obligatorio")
-    @Size(max = 20)
     private String flightNumber;
-
-    @NotNull(message = "La ciudad de origen es obligatoria")
-    private CityDTO departureCity;
-
-    @NotNull(message = "La ciudad de destino es obligatoria")
-    private CityDTO arrivalCity;
-
-    @NotNull(message = "La hora de salida es obligatoria")
-    private LocalTime departureTime;
-
-    @NotNull(message = "La hora de llegada es obligatoria")
-    private LocalTime arrivalTime;
-
-    @NotNull(message = "La fecha de salida es obligatoria")
-    @FutureOrPresent(message = "La fecha de salida debe ser hoy o en el futuro")
+    private Long departureCityId;
+    private String departureCityName;
+    private Long arrivalCityId;
+    private String arrivalCityName;
     private LocalDate departureDate;
-
-    @Future(message = "La fecha de regreso debe ser en el futuro")
-    private LocalDate returnDate;
-
-    @NotNull
-    @Positive(message = "La duración debe ser positiva")
-    private Integer duration;
-
-    @NotNull
-    @PositiveOrZero(message = "El precio no puede ser negativo")
+    private LocalTime departureTime;
+    private LocalTime arrivalTime;
+    private Integer duration; // in minutes
     private Double price;
-
-    @NotNull
-    @Min(value = 1, message = "Debe haber al menos 1 adulto")
     private Integer adultNumber;
-
-    @NotNull
-    @Min(value = 0, message = "El número de niños no puede ser negativa")
     private Integer childNumber;
-
-    @Enumerated(EnumType.STRING)
     private FlightClass flightClass;
-
+    
     public FlightDTO(){}
 
-    public FlightDTO(Long flightId, String airline, String flightNumber, CityDTO departureCity, CityDTO arrivalCity, LocalTime departureTime, LocalTime arrivalTime, LocalDate departureDate, LocalDate returnDate, Integer duration, Double price, Integer adultNumber, Integer childNumber, FlightClass flightClass) {
+    public FlightDTO(Long flightId, String airline, String flightNumber, Long departureCityId, String departureCityName, Long arrivalCityId, String arrivalCityName, LocalDate departureDate, LocalTime departureTime, LocalTime arrivalTime, Integer duration, Double price, Integer adultNumber, Integer childNumber, FlightClass flightClass) {
         this.flightId = flightId;
         this.airline = airline;
         this.flightNumber = flightNumber;
-        this.departureCity = departureCity;
-        this.arrivalCity = arrivalCity;
+        this.departureCityId = departureCityId;
+        this.departureCityName = departureCityName;
+        this.arrivalCityId = arrivalCityId;
+        this.arrivalCityName = arrivalCityName;
+        this.departureDate = departureDate;
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
-        this.departureDate = departureDate;
-        this.returnDate = returnDate;
         this.duration = duration;
         this.price = price;
         this.adultNumber = adultNumber;
@@ -100,20 +66,44 @@ public class FlightDTO {
         this.flightNumber = flightNumber;
     }
 
-    public CityDTO getDepartureCity() {
-        return departureCity;
+    public Long getDepartureCityId() {
+        return departureCityId;
     }
 
-    public void setDepartureCity(CityDTO departureCity) {
-        this.departureCity = departureCity;
+    public void setDepartureCityId(Long departureCityId) {
+        this.departureCityId = departureCityId;
     }
 
-    public CityDTO getArrivalCity() {
-        return arrivalCity;
+    public String getDepartureCityName() {
+        return departureCityName;
     }
 
-    public void setArrivalCity(CityDTO arrivalCity) {
-        this.arrivalCity = arrivalCity;
+    public void setDepartureCityName(String departureCityName) {
+        this.departureCityName = departureCityName;
+    }
+
+    public Long getArrivalCityId() {
+        return arrivalCityId;
+    }
+
+    public void setArrivalCityId(Long arrivalCityId) {
+        this.arrivalCityId = arrivalCityId;
+    }
+
+    public String getArrivalCityName() {
+        return arrivalCityName;
+    }
+
+    public void setArrivalCityName(String arrivalCityName) {
+        this.arrivalCityName = arrivalCityName;
+    }
+
+    public LocalDate getDepartureDate() {
+        return departureDate;
+    }
+
+    public void setDepartureDate(LocalDate departureDate) {
+        this.departureDate = departureDate;
     }
 
     public LocalTime getDepartureTime() {
@@ -130,22 +120,6 @@ public class FlightDTO {
 
     public void setArrivalTime(LocalTime arrivalTime) {
         this.arrivalTime = arrivalTime;
-    }
-
-    public LocalDate getDepartureDate() {
-        return departureDate;
-    }
-
-    public void setDepartureDate(LocalDate departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
     }
 
     public Integer getDuration() {

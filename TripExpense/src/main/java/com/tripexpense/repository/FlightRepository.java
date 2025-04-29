@@ -21,4 +21,6 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
             LocalDate startDate,
             LocalDate endDate,
             FlightClass flightClass);
+
+    boolean existsByFlightNumber(String flightNumber);
 }

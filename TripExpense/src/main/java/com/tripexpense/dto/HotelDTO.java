@@ -9,6 +9,10 @@ import java.util.List;
 public class HotelDTO {
 
     private Long hotelId;
+    @NotBlank
+    private Long cityId;
+    @NotBlank
+    private String cityName;
 
     @NotNull
     private CityDTO city;
@@ -62,8 +66,10 @@ public class HotelDTO {
 
     public HotelDTO(){}
 
-    public HotelDTO(Long hotelId, CityDTO city, String name, String address, Integer starRating, String description, List<String> amenities, List<String> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String checkInTime, String checkOutTime, String contactEmail, String contactPhone) {
+    public HotelDTO(Long hotelId, Long cityId, String cityName, CityDTO city, String name, String address, Integer starRating, String description, List<String> amenities, List<String> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String checkInTime, String checkOutTime, String contactEmail, String contactPhone) {
         this.hotelId = hotelId;
+        this.cityId = cityId;
+        this.cityName = cityName;
         this.city = city;
         this.name = name;
         this.address = address;
@@ -86,6 +92,22 @@ public class HotelDTO {
 
     public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
+    }
+
+    public Long getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(Long cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
     public CityDTO getCity() {
@@ -198,5 +220,8 @@ public class HotelDTO {
 
     public void setContactPhone(String contactPhone) {
         this.contactPhone = contactPhone;
+    }
+
+    public void setAverageRating(Double calculateAverageRating) {
     }
 }

@@ -1,6 +1,6 @@
 package com.tripexpense.entity;
 
-import com.tripexpense.enums.TravelPlanStatus;
+import com.tripexpense.enums.PlanStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -48,7 +48,7 @@ public class TravelPlan {
     private Double totalCost;
 
     @Enumerated(EnumType.STRING)
-    private TravelPlanStatus status;
+    private PlanStatus status;
 
     @NotNull
     @ManyToOne
@@ -81,7 +81,7 @@ public class TravelPlan {
 
     public TravelPlan(){}
 
-    public TravelPlan(Long travelPlanId, User user, String title, String description, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, Double totalCost, TravelPlanStatus status, City destinationCity, Flight flight, Hotel hotel, List<Activity> activities, String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public TravelPlan(Long travelPlanId, User user, String title, String description, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, Double totalCost, PlanStatus status, City destinationCity, Flight flight, Hotel hotel, List<Activity> activities, String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.travelPlanId = travelPlanId;
         this.user = user;
         this.title = title;
@@ -173,11 +173,11 @@ public class TravelPlan {
         this.totalCost = totalCost;
     }
 
-    public TravelPlanStatus getStatus() {
+    public PlanStatus getStatus() {
         return status;
     }
 
-    public void setStatus(TravelPlanStatus status) {
+    public void setStatus(PlanStatus status) {
         this.status = status;
     }
 
