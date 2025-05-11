@@ -5,10 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.URL;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "flights")
@@ -20,6 +19,10 @@ public class Flight {
     @NotBlank(message = "La aerolínea es obligatoria")
     @Size(max = 100)
     private String airline;
+
+    @Size(max = 255)
+    @URL(message = "La URL del logo debe ser válida")
+    private String airlineLogoUrl;
 
     @NotBlank(message = "El número de vuelo es obligatorio")
     @Size(max = 20)
@@ -36,33 +39,24 @@ public class Flight {
     private City arrivalCity;
 
     @NotNull(message = "La hora de salida es obligatoria")
-    private LocalTime departureTime;
+    private LocalDateTime departureDateTime;
 
     @NotNull(message = "La hora de llegada es obligatoria")
-    private LocalTime arrivalTime;
-
-    @NotNull(message = "La fecha de salida es obligatoria")
-    @FutureOrPresent(message = "La fecha de salida debe ser hoy o en el futuro")
-    private LocalDate departureDate;
-
-    @Future(message = "La fecha de regreso debe ser en el futuro")
-    private LocalDate returnDate;
+    private LocalDateTime arrivalDateTime;
 
     @NotNull
-    @Positive(message = "La duración debe ser positiva")
-    private Integer duration;
+    @Positive(message = "La duración en minutos debe ser positiva")
+    private Integer durationMinutes;
 
     @NotNull
     @PositiveOrZero(message = "El precio no puede ser negativo")
     private Double price;
 
-    @NotNull
     @Min(value = 1, message = "Debe haber al menos 1 adulto")
-    private Integer adultNumber;
+    private Integer adults;
 
-    @NotNull
-    @Min(value = 0, message = "El número de niños no puede ser negativa")
-    private Integer childNumber;
+    @Min(value = 0, message = "El número de niños no puede ser negativo")
+    private Integer children;
 
     @Enumerated(EnumType.STRING)
     private FlightClass flightClass;
@@ -75,22 +69,28 @@ public class Flight {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    @PreUpdate
+    private void validateCities() {
+        if (departureCity != null && departureCity.equals(arrivalCity)) {
+            throw new IllegalArgumentException("La ciudad de origen y destino no pueden ser iguales");
+        }
+    }
     public Flight(){}
 
-    public Flight(Long flightId, String airline, String flightNumber, City departureCity, City arrivalCity, LocalTime departureTime, LocalTime arrivalTime, LocalDate departureDate, LocalDate returnDate, Integer duration, Double price, Integer adultNumber, Integer childNumber, FlightClass flightClass, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.flightId = flightId;
+    public Flight(Long id, String airline, String airlineLogoUrl, String flightNumber, City departureCity, City arrivalCity, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime, Integer durationMinutes, Double price, Integer adults, Integer children, FlightClass flightClass, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.flightId = id;
         this.airline = airline;
+        this.airlineLogoUrl = airlineLogoUrl;
         this.flightNumber = flightNumber;
         this.departureCity = departureCity;
         this.arrivalCity = arrivalCity;
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
-        this.departureDate = departureDate;
-        this.returnDate = returnDate;
-        this.duration = duration;
+        this.departureDateTime = departureDateTime;
+        this.arrivalDateTime = arrivalDateTime;
+        this.durationMinutes = durationMinutes;
         this.price = price;
-        this.adultNumber = adultNumber;
-        this.childNumber = childNumber;
+        this.adults = adults;
+        this.children = children;
         this.flightClass = flightClass;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -110,6 +110,14 @@ public class Flight {
 
     public void setAirline(String airline) {
         this.airline = airline;
+    }
+
+    public String getAirlineLogoUrl() {
+        return airlineLogoUrl;
+    }
+
+    public void setAirlineLogoUrl(String airlineLogoUrl) {
+        this.airlineLogoUrl = airlineLogoUrl;
     }
 
     public String getFlightNumber() {
@@ -136,44 +144,28 @@ public class Flight {
         this.arrivalCity = arrivalCity;
     }
 
-    public LocalTime getDepartureTime() {
-        return departureTime;
+    public LocalDateTime getDepartureDateTime() {
+        return departureDateTime;
     }
 
-    public void setDepartureTime(LocalTime departureTime) {
-        this.departureTime = departureTime;
+    public void setDepartureDateTime(LocalDateTime departureDateTime) {
+        this.departureDateTime = departureDateTime;
     }
 
-    public LocalTime getArrivalTime() {
-        return arrivalTime;
+    public LocalDateTime getArrivalDateTime() {
+        return arrivalDateTime;
     }
 
-    public void setArrivalTime(LocalTime arrivalTime) {
-        this.arrivalTime = arrivalTime;
+    public void setArrivalDateTime(LocalDateTime arrivalDateTime) {
+        this.arrivalDateTime = arrivalDateTime;
     }
 
-    public LocalDate getDepartureDate() {
-        return departureDate;
+    public Integer getDurationMinutes() {
+        return durationMinutes;
     }
 
-    public void setDepartureDate(LocalDate departureDate) {
-        this.departureDate = departureDate;
-    }
-
-    public LocalDate getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
-    }
-
-    public Integer getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Integer duration) {
-        this.duration = duration;
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
     }
 
     public Double getPrice() {
@@ -184,20 +176,20 @@ public class Flight {
         this.price = price;
     }
 
-    public Integer getAdultNumber() {
-        return adultNumber;
+    public Integer getAdults() {
+        return adults;
     }
 
-    public void setAdultNumber(Integer adultNumber) {
-        this.adultNumber = adultNumber;
+    public void setAdults(Integer adults) {
+        this.adults = adults;
     }
 
-    public Integer getChildNumber() {
-        return childNumber;
+    public Integer getChildren() {
+        return children;
     }
 
-    public void setChildNumber(Integer childNumber) {
-        this.childNumber = childNumber;
+    public void setChildren(Integer children) {
+        this.children = children;
     }
 
     public FlightClass getFlightClass() {

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,8 +29,12 @@ public class Hotel {
     @Size(max = 255)
     private String address;
 
+    @Size(max = 255)
+    @URL(message = "La URL de la imagen debe ser válida")
+    private String imageUrl;
+
     @Min(1) @Max(5)
-    private Integer starRating;
+    private Integer stars;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -38,6 +43,8 @@ public class Hotel {
     private List<String> amenities;
 
     @ElementCollection
+    @CollectionTable(name = "hotel_room_types", joinColumns = @JoinColumn(name = "hotel_id"))
+    @Column(name = "room_type")
     private List<String> roomTypes;
 
     @NotNull
@@ -62,10 +69,10 @@ public class Hotel {
 
     @Email
     @Size(max = 100)
-    private String contactEmail;
+    private String email;
 
     @Size(max = 20)
-    private String contactPhone;
+    private String phone;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -77,12 +84,13 @@ public class Hotel {
 
     public Hotel(){}
 
-    public Hotel(Long hotelId, City city, String name, String address, Integer starRating, String description, List<String> amenities, List<String> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String checkInTime, String checkOutTime, String contactEmail, String contactPhone, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Hotel(Long hotelId, City city, String name, String address, String imageUrl, Integer stars, String description, List<String> amenities, List<String> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String checkInTime, String checkOutTime, String email, String phone, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.hotelId = hotelId;
         this.city = city;
         this.name = name;
         this.address = address;
-        this.starRating = starRating;
+        this.imageUrl = imageUrl;
+        this.stars = stars;
         this.description = description;
         this.amenities = amenities;
         this.roomTypes = roomTypes;
@@ -91,8 +99,8 @@ public class Hotel {
         this.maxChildren = maxChildren;
         this.checkInTime = checkInTime;
         this.checkOutTime = checkOutTime;
-        this.contactEmail = contactEmail;
-        this.contactPhone = contactPhone;
+        this.email = email;
+        this.phone = phone;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -129,12 +137,20 @@ public class Hotel {
         this.address = address;
     }
 
-    public Integer getStarRating() {
-        return starRating;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setStarRating(Integer starRating) {
-        this.starRating = starRating;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getStars() {
+        return stars;
+    }
+
+    public void setStars(Integer stars) {
+        this.stars = stars;
     }
 
     public String getDescription() {
@@ -201,20 +217,20 @@ public class Hotel {
         this.checkOutTime = checkOutTime;
     }
 
-    public String getContactEmail() {
-        return contactEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getContactPhone() {
-        return contactPhone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public LocalDateTime getCreatedAt() {

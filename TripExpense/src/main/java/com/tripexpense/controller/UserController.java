@@ -6,6 +6,7 @@ import com.tripexpense.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
         try {
             if (userRepository.existsByEmail(userDTO.getEmail())) {
@@ -47,6 +49,7 @@ public class UserController {
 
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         try {
             List<UserDTO> userDTOS = userService.getAllUsers();
@@ -66,6 +69,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> getUserById(@PathVariable Long id){
         try {
             UserDTO userDTO = userService.getUserById(id);
@@ -104,6 +108,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
         try {
             if (!userRepository.existsById(id)) {

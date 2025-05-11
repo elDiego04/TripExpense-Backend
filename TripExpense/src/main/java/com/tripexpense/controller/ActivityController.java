@@ -6,6 +6,7 @@ import com.tripexpense.service.impl.ActivityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class ActivityController {
     private ActivityRepository activityRepository;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> createActivity(@RequestBody ActivityDTO activityDTO) {
         try {
             if (activityRepository.existsByNameAndCityCityId(activityDTO.getName(), activityDTO.getCityId())) {
@@ -84,6 +86,7 @@ public class ActivityController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> updateActivity(@PathVariable Long id, @RequestBody ActivityDTO activityDTO) {
         try {
             ActivityDTO updatedActivity = activityService.updateActivity(id, activityDTO);
@@ -103,6 +106,7 @@ public class ActivityController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteActivity(@PathVariable Long id) {
         try {
             if (!activityRepository.existsById(id)) {

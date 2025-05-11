@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +27,10 @@ public class Activity {
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Size(max = 255)
+    @URL(message = "La URL de la imagen debe ser válida")
+    private String imageUrl;
 
     @NotBlank
     @Size(max = 50)
@@ -57,7 +62,6 @@ public class Activity {
     @Size(max = 50)
     private String difficultyLevel;
 
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -68,11 +72,12 @@ public class Activity {
 
     public Activity(){}
 
-    public Activity(Long activityId, City city, String name, String description, String category, Integer duration, Double price, String location, List<String> availabilityDates, Integer minPeople, Integer maxPeople, String difficultyLevel, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.activityId = activityId;
+    public Activity(Long id, City city, String name, String description, String imageUrl, String category, Integer duration, Double price, String location, List<String> availabilityDates, Integer minPeople, Integer maxPeople, String difficultyLevel, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.activityId = id;
         this.city = city;
         this.name = name;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.category = category;
         this.duration = duration;
         this.price = price;
@@ -115,6 +120,14 @@ public class Activity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getCategory() {

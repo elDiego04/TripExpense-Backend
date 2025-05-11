@@ -1,26 +1,30 @@
 package com.tripexpense.repository;
 
-import com.tripexpense.dto.CityDTO;
 import com.tripexpense.entity.Flight;
 import com.tripexpense.enums.FlightClass;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface FlightRepository extends JpaRepository<Flight, Long> {
 
-    List<Flight> findByDepartureCityAndArrivalCityAndDepartureDateAndReturnDate(
-            CityDTO departureCity, CityDTO arrivalCity,
-            LocalDate departureDate, LocalDate returnDate
-    );
-
-    List<Flight> findByDepartureDateBetweenAndFlightClass(
-            LocalDate startDate,
-            LocalDate endDate,
-            FlightClass flightClass);
-
     boolean existsByFlightNumber(String flightNumber);
+
+    List<Flight> findByDepartureCityCityIdAndArrivalCityCityIdAndDepartureDateTimeBetween(
+            Long departureCityId,
+            Long arrivalCityId,
+            LocalDateTime startDateTime,
+            LocalDateTime endDateTime);
+
+    @Query("SELECT f FROM Flight f WHERE DATE(f.departureDateTime) BETWEEN :startDate AND :endDate AND f.flightClass = :flightClass")
+    List<Flight> findByDepartureDateBetweenAndFlightClass(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("flightClass") FlightClass flightClass);
 }

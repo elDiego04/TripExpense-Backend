@@ -44,6 +44,16 @@ public class CityServiceImpl implements CityService {
     }
 
     @Override
+    public CityDTO getCityByName(String name) {
+        Optional<City> city = cityRepository.findByName(name);
+        if (city.isPresent()){
+            return convertToDTO(city.get());
+        } else {
+            throw new RuntimeException("Ciudad no encontrada");
+        }
+    }
+
+    @Override
     public List<CityDTO> getAllCities() {
         return cityRepository.findAll()
                 .stream()
