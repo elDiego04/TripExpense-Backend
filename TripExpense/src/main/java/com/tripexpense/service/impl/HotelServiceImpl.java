@@ -123,10 +123,6 @@ public class HotelServiceImpl implements HotelService {
         if (dto.getStars() != null) entity.setStars(dto.getStars());
         if (dto.getDescription() != null) entity.setDescription(dto.getDescription());
         if (dto.getAmenities() != null) entity.setAmenities(new ArrayList<>(dto.getAmenities()));
-        if (dto.getRoomTypes() != null) entity.setRoomTypes(new ArrayList<>(dto.getRoomTypes()));
-        if (dto.getPricePerNight() != null) entity.setPricePerNight(dto.getPricePerNight());
-        if (dto.getMaxAdults() != null) entity.setMaxAdults(dto.getMaxAdults());
-        if (dto.getMaxChildren() != null) entity.setMaxChildren(dto.getMaxChildren());
         if (dto.getCheckInTime() != null) entity.setCheckInTime(dto.getCheckInTime());
         if (dto.getCheckOutTime() != null) entity.setCheckOutTime(dto.getCheckOutTime());
         if (dto.getEmail() != null) entity.setEmail(dto.getEmail());
@@ -144,10 +140,6 @@ public class HotelServiceImpl implements HotelService {
         dto.setStars(hotel.getStars());
         dto.setDescription(hotel.getDescription());
         dto.setAmenities(new ArrayList<>(hotel.getAmenities()));
-        dto.setRoomTypes(new ArrayList<>(hotel.getRoomTypes()));
-        dto.setPricePerNight(hotel.getPricePerNight());
-        dto.setMaxAdults(hotel.getMaxAdults());
-        dto.setMaxChildren(hotel.getMaxChildren());
         dto.setCheckInTime(hotel.getCheckInTime());
         dto.setCheckOutTime(hotel.getCheckOutTime());
         dto.setEmail(hotel.getEmail());

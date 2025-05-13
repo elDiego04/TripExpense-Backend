@@ -56,9 +56,6 @@ public class TravelPackage {
             inverseJoinColumns = @JoinColumn(name = "activity_id"))
     private List<Activity> includedActivities;
 
-    @ElementCollection
-    @CollectionTable(name = "package_tags", joinColumns = @JoinColumn(name = "package_id"))
-    private List<String> tags;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -74,7 +71,7 @@ public class TravelPackage {
 
     public TravelPackage(){}
 
-    public TravelPackage(Long travelPackageId, String name, String description, String imageUrl, City destination, Double basePrice, Integer durationDays, Flight includedFlight, Hotel includedHotel, List<Activity> includedActivities, List<String> tags, PackageType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public TravelPackage(Long travelPackageId, String name, String description, String imageUrl, City destination, Double basePrice, Integer durationDays, Flight includedFlight, Hotel includedHotel, List<Activity> includedActivities, PackageType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.travelPackageId = travelPackageId;
         this.name = name;
         this.description = description;
@@ -85,7 +82,6 @@ public class TravelPackage {
         this.includedFlight = includedFlight;
         this.includedHotel = includedHotel;
         this.includedActivities = includedActivities;
-        this.tags = tags;
         this.type = type;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -169,14 +165,6 @@ public class TravelPackage {
 
     public void setIncludedActivities(List<Activity> includedActivities) {
         this.includedActivities = includedActivities;
-    }
-
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
     }
 
     public PackageType getType() {

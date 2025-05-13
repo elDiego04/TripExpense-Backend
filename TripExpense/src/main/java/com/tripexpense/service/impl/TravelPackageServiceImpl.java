@@ -129,7 +129,6 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         entity.setImageUrl(dto.getImageUrl());
         entity.setBasePrice(dto.getBasePrice());
         entity.setDurationDays(dto.getDurationDays());
-        entity.setTags(dto.getTags());
         entity.setType(dto.getType());
 
         City destination = cityRepository.findById(dto.getDestination().getCityId())
@@ -172,7 +171,6 @@ public class TravelPackageServiceImpl implements TravelPackageService {
         dto.setIncludedFlight(travelPackage.getIncludedFlight());
         dto.setIncludedHotel(travelPackage.getIncludedHotel());
         dto.setIncludedActivities(travelPackage.getIncludedActivities());
-        dto.setTags(travelPackage.getTags());
         dto.setType(travelPackage.getType());
         return dto;
     }

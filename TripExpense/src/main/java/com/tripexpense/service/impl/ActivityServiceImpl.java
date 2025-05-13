@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,8 +36,6 @@ public class ActivityServiceImpl implements ActivityService {
 
         City city = cityRepository.findById(activityDTO.getCityId())
                 .orElseThrow(() -> new ResourceNotFoundException("Ciudad no encontrada con ID: " + activityDTO.getCityId()));
-
-        validatePeopleRange(activityDTO.getMinPeople(), activityDTO.getMaxPeople());
 
         Activity activity = new Activity();
         mapDTOToEntity(activityDTO, activity);
@@ -74,9 +71,7 @@ public class ActivityServiceImpl implements ActivityService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
-
     @Override
-    @Transactional(readOnly = true)
     public List<ActivityDTO> searchActivities(String query) {
         return activityRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query)
                 .stream()
@@ -84,29 +79,24 @@ public class ActivityServiceImpl implements ActivityService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     @Transactional
     public ActivityDTO updateActivity(Long id, ActivityDTO activityDTO) {
         Activity existingActivity = activityRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Actividad no encontrada con ID: " + id));
 
-        // Validar unicidad del nombre si cambió
         if (!existingActivity.getName().equals(activityDTO.getName()) &&
                 activityRepository.existsByNameAndCityCityId(activityDTO.getName(), activityDTO.getCityId())) {
             throw new DuplicateResourceException("Ya existe una actividad con este nombre en esta ciudad");
         }
 
-        // Validar rango de personas
-        validatePeopleRange(activityDTO.getMinPeople(), activityDTO.getMaxPeople());
-
-        // Actualizar ciudad si cambió
         if (!existingActivity.getCity().getCityId().equals(activityDTO.getCityId())) {
             City newCity = cityRepository.findById(activityDTO.getCityId())
                     .orElseThrow(() -> new ResourceNotFoundException("Ciudad no encontrada con ID: " + activityDTO.getCityId()));
             existingActivity.setCity(newCity);
         }
 
-        // Mapear los demás campos
         mapDTOToEntity(activityDTO, existingActivity);
 
         Activity updatedActivity = activityRepository.save(existingActivity);
@@ -132,16 +122,11 @@ public class ActivityServiceImpl implements ActivityService {
 
     private void mapDTOToEntity(ActivityDTO dto, Activity entity) {
         entity.setName(dto.getName());
-        entity.setDescription(dto.getDescription());
         entity.setImageUrl(dto.getImageUrl());
         entity.setCategory(dto.getCategory());
         entity.setDuration(dto.getDuration());
         entity.setPrice(dto.getPrice());
         entity.setLocation(dto.getLocation());
-        entity.setAvailabilityDates(dto.getAvailabilityDates() != null ?
-                new ArrayList<>(dto.getAvailabilityDates()) : new ArrayList<>());
-        entity.setMinPeople(dto.getMinPeople());
-        entity.setMaxPeople(dto.getMaxPeople());
         entity.setDifficultyLevel(dto.getDifficultyLevel());
     }
 
@@ -151,22 +136,12 @@ public class ActivityServiceImpl implements ActivityService {
         dto.setCityId(activity.getCity().getCityId());
         dto.setCityName(activity.getCity().getName());
         dto.setName(activity.getName());
-        dto.setDescription(activity.getDescription());
         dto.setImageUrl(activity.getImageUrl());
         dto.setCategory(activity.getCategory());
         dto.setDuration(activity.getDuration());
         dto.setPrice(activity.getPrice());
         dto.setLocation(activity.getLocation());
-        dto.setAvailabilityDates(new ArrayList<>(activity.getAvailabilityDates()));
-        dto.setMinPeople(activity.getMinPeople());
-        dto.setMaxPeople(activity.getMaxPeople());
         dto.setDifficultyLevel(activity.getDifficultyLevel());
         return dto;
-    }
-
-    private void validatePeopleRange(Integer min, Integer max) {
-        if (min > max) {
-            throw new IllegalArgumentException("El mínimo de personas no puede ser mayor que el máximo");
-        }
     }
 }

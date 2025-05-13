@@ -1,10 +1,7 @@
 package com.tripexpense.entity;
 
-import com.tripexpense.enums.FlightClass;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
@@ -45,41 +42,16 @@ public class Flight {
     private LocalDateTime arrivalDateTime;
 
     @NotNull
-    @Positive(message = "La duración en minutos debe ser positiva")
+    @Positive(message = "La duración debe ser positiva")
     private Integer durationMinutes;
 
-    @NotNull
-    @PositiveOrZero(message = "El precio no puede ser negativo")
-    private Double price;
+    @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private FlightBooking booking;
 
-    @Min(value = 1, message = "Debe haber al menos 1 adulto")
-    private Integer adults;
+    public Flight() {}
 
-    @Min(value = 0, message = "El número de niños no puede ser negativo")
-    private Integer children;
-
-    @Enumerated(EnumType.STRING)
-    private FlightClass flightClass;
-
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
-    @PrePersist
-    @PreUpdate
-    private void validateCities() {
-        if (departureCity != null && departureCity.equals(arrivalCity)) {
-            throw new IllegalArgumentException("La ciudad de origen y destino no pueden ser iguales");
-        }
-    }
-    public Flight(){}
-
-    public Flight(Long id, String airline, String airlineLogoUrl, String flightNumber, City departureCity, City arrivalCity, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime, Integer durationMinutes, Double price, Integer adults, Integer children, FlightClass flightClass, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.flightId = id;
+    public Flight(Long flightId, String airline, String airlineLogoUrl, String flightNumber, City departureCity, City arrivalCity, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime, Integer durationMinutes, FlightBooking booking) {
+        this.flightId = flightId;
         this.airline = airline;
         this.airlineLogoUrl = airlineLogoUrl;
         this.flightNumber = flightNumber;
@@ -88,12 +60,7 @@ public class Flight {
         this.departureDateTime = departureDateTime;
         this.arrivalDateTime = arrivalDateTime;
         this.durationMinutes = durationMinutes;
-        this.price = price;
-        this.adults = adults;
-        this.children = children;
-        this.flightClass = flightClass;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.booking = booking;
     }
 
     public Long getFlightId() {
@@ -168,52 +135,11 @@ public class Flight {
         this.durationMinutes = durationMinutes;
     }
 
-    public Double getPrice() {
-        return price;
+    public FlightBooking getBooking() {
+        return booking;
     }
 
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getAdults() {
-        return adults;
-    }
-
-    public void setAdults(Integer adults) {
-        this.adults = adults;
-    }
-
-    public Integer getChildren() {
-        return children;
-    }
-
-    public void setChildren(Integer children) {
-        this.children = children;
-    }
-
-    public FlightClass getFlightClass() {
-        return flightClass;
-    }
-
-    public void setFlightClass(FlightClass flightClass) {
-        this.flightClass = flightClass;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setBooking(FlightBooking booking) {
+        this.booking = booking;
     }
 }
-

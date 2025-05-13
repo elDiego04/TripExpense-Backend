@@ -1,7 +1,6 @@
 package com.tripexpense.repository;
 
 import com.tripexpense.entity.Flight;
-import com.tripexpense.enums.FlightClass;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,9 +21,9 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
             LocalDateTime startDateTime,
             LocalDateTime endDateTime);
 
-    @Query("SELECT f FROM Flight f WHERE DATE(f.departureDateTime) BETWEEN :startDate AND :endDate AND f.flightClass = :flightClass")
-    List<Flight> findByDepartureDateBetweenAndFlightClass(
+    @Query("SELECT f FROM Flight f WHERE DATE(f.departureDateTime) BETWEEN :startDate AND :endDate")
+    List<Flight> findByDepartureDateBetween(
             @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
-            @Param("flightClass") FlightClass flightClass);
+            @Param("endDate") LocalDate endDate);
+
 }

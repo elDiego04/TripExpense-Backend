@@ -120,6 +120,7 @@ public class FlightServiceImpl implements FlightService {
         Flight updatedFlight = flightRepository.save(existingFlight);
         return convertToFullDTO(updatedFlight);
     }
+
     @Override
     public List<FlightDTO> searchFlights(FlightSearchDTO searchDTO) {
         LocalDate departureDate = searchDTO.getDepartureDate();
@@ -136,6 +137,7 @@ public class FlightServiceImpl implements FlightService {
                 .map(this::convertToFullDTO)
                 .collect(Collectors.toList());
     }
+
     @Override
     @Transactional
     public void deleteFlight(Long id) {
@@ -165,25 +167,15 @@ public class FlightServiceImpl implements FlightService {
                 .collect(Collectors.toList());
     }
 
-
     private void mapDTOToEntity(FlightDTO dto, Flight entity) {
-        if (dto.getAirline() != null) entity.setAirline(dto.getAirline());
-        if (dto.getAirlineLogoUrl() != null) entity.setAirlineLogoUrl(dto.getAirlineLogoUrl());
         if (dto.getFlightNumber() != null) entity.setFlightNumber(dto.getFlightNumber());
         if (dto.getDepartureDateTime() != null) entity.setDepartureDateTime(dto.getDepartureDateTime());
         if (dto.getArrivalDateTime() != null) entity.setArrivalDateTime(dto.getArrivalDateTime());
-        if (dto.getDurationMinutes() != null) entity.setDurationMinutes(dto.getDurationMinutes());
-        if (dto.getPrice() != null) entity.setPrice(dto.getPrice());
-        if (dto.getAdults() != null) entity.setAdults(dto.getAdults());
-        if (dto.getChildren() != null) entity.setChildren(dto.getChildren());
-        if (dto.getFlightClass() != null) entity.setFlightClass(dto.getFlightClass());
     }
 
     private FlightDTO convertToFullDTO(Flight flight) {
         FlightDTO dto = new FlightDTO();
         dto.setFlightId(flight.getFlightId());
-        dto.setAirline(flight.getAirline());
-        dto.setAirlineLogoUrl(flight.getAirlineLogoUrl());
         dto.setFlightNumber(flight.getFlightNumber());
         dto.setDepartureCityId(flight.getDepartureCity().getCityId());
         dto.setDepartureCityName(flight.getDepartureCity().getName());
@@ -191,11 +183,6 @@ public class FlightServiceImpl implements FlightService {
         dto.setArrivalCityName(flight.getArrivalCity().getName());
         dto.setDepartureDateTime(flight.getDepartureDateTime());
         dto.setArrivalDateTime(flight.getArrivalDateTime());
-        dto.setDurationMinutes(flight.getDurationMinutes());
-        dto.setPrice(flight.getPrice());
-        dto.setAdults(flight.getAdults());
-        dto.setChildren(flight.getChildren());
-        dto.setFlightClass(flight.getFlightClass());
         return dto;
     }
 }

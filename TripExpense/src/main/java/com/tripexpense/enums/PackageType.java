@@ -1,6 +1,7 @@
 package com.tripexpense.enums;
 
 public enum PackageType {
+    ALL_INCLUSIVE("Todo incluído"),
     ADVENTURE("Aventura"),
     ROMANTIC("Romántico"),
     FAMILY("Familiar"),

@@ -16,14 +16,14 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelId;
 
+    @NotBlank
+    @Size(max = 100)
+    private String name;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
-
-    @NotBlank
-    @Size(max = 100)
-    private String name;
 
     @NotBlank
     @Size(max = 255)
@@ -33,7 +33,8 @@ public class Hotel {
     @URL(message = "La URL de la imagen debe ser válida")
     private String imageUrl;
 
-    @Min(1) @Max(5)
+    @Min(1)
+    @Max(5)
     private Integer stars;
 
     @Column(columnDefinition = "TEXT")
@@ -41,23 +42,6 @@ public class Hotel {
 
     @ElementCollection
     private List<String> amenities;
-
-    @ElementCollection
-    @CollectionTable(name = "hotel_room_types", joinColumns = @JoinColumn(name = "hotel_id"))
-    @Column(name = "room_type")
-    private List<String> roomTypes;
-
-    @NotNull
-    @PositiveOrZero
-    private Double pricePerNight;
-
-    @NotNull
-    @Min(1)
-    private Integer maxAdults;
-
-    @NotNull
-    @Min(0)
-    private Integer maxChildren;
 
     @NotBlank
     @Size(max = 50)
@@ -73,7 +57,6 @@ public class Hotel {
 
     @Size(max = 20)
     private String phone;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -84,19 +67,15 @@ public class Hotel {
 
     public Hotel(){}
 
-    public Hotel(Long hotelId, City city, String name, String address, String imageUrl, Integer stars, String description, List<String> amenities, List<String> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String checkInTime, String checkOutTime, String email, String phone, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Hotel(Long hotelId, String name, City city, String address, String imageUrl, Integer stars, String description, List<String> amenities, String checkInTime, String checkOutTime, String email, String phone, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.hotelId = hotelId;
-        this.city = city;
         this.name = name;
+        this.city = city;
         this.address = address;
         this.imageUrl = imageUrl;
         this.stars = stars;
         this.description = description;
         this.amenities = amenities;
-        this.roomTypes = roomTypes;
-        this.pricePerNight = pricePerNight;
-        this.maxAdults = maxAdults;
-        this.maxChildren = maxChildren;
         this.checkInTime = checkInTime;
         this.checkOutTime = checkOutTime;
         this.email = email;
@@ -113,20 +92,20 @@ public class Hotel {
         this.hotelId = hotelId;
     }
 
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public String getAddress() {
@@ -167,38 +146,6 @@ public class Hotel {
 
     public void setAmenities(List<String> amenities) {
         this.amenities = amenities;
-    }
-
-    public List<String> getRoomTypes() {
-        return roomTypes;
-    }
-
-    public void setRoomTypes(List<String> roomTypes) {
-        this.roomTypes = roomTypes;
-    }
-
-    public Double getPricePerNight() {
-        return pricePerNight;
-    }
-
-    public void setPricePerNight(Double pricePerNight) {
-        this.pricePerNight = pricePerNight;
-    }
-
-    public Integer getMaxAdults() {
-        return maxAdults;
-    }
-
-    public void setMaxAdults(Integer maxAdults) {
-        this.maxAdults = maxAdults;
-    }
-
-    public Integer getMaxChildren() {
-        return maxChildren;
-    }
-
-    public void setMaxChildren(Integer maxChildren) {
-        this.maxChildren = maxChildren;
     }
 
     public String getCheckInTime() {
