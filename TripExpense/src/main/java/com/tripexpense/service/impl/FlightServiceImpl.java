@@ -1,144 +1,188 @@
 package com.tripexpense.service.impl;
 
 import com.tripexpense.dto.FlightDTO;
+import com.tripexpense.dto.FlightSearchDTO;
 import com.tripexpense.entity.City;
 import com.tripexpense.entity.Flight;
+import com.tripexpense.exception.DuplicateResourceException;
+import com.tripexpense.exception.InvalidRequestException;
 import com.tripexpense.repository.CityRepository;
 import com.tripexpense.repository.FlightRepository;
 import com.tripexpense.service.interfac.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 public class FlightServiceImpl implements FlightService {
 
+    private final FlightRepository flightRepository;
+    private final CityRepository cityRepository;
+
     @Autowired
-    private FlightRepository flightRepository;
-    @Autowired
-    private CityRepository cityRepository;
+    public FlightServiceImpl(FlightRepository flightRepository, CityRepository cityRepository) {
+        this.flightRepository = flightRepository;
+        this.cityRepository = cityRepository;
+    }
 
     @Override
+    @Transactional
     public FlightDTO createFlight(FlightDTO flightDTO) {
+        flightDTO.validate();
+
         if (flightRepository.existsByFlightNumber(flightDTO.getFlightNumber())) {
-            throw new RuntimeException("Flight number already exists");
+            throw new DuplicateResourceException("Ya existe un vuelo con este número");
         }
 
         City departureCity = cityRepository.findById(flightDTO.getDepartureCityId())
-                .orElseThrow(() -> new RuntimeException("Departure city not found"));
+                .orElseThrow(() -> new NoSuchElementException("Ciudad de origen no encontrada"));
 
         City arrivalCity = cityRepository.findById(flightDTO.getArrivalCityId())
-                .orElseThrow(() -> new RuntimeException("Arrival city not found"));
+                .orElseThrow(() -> new NoSuchElementException("Ciudad de destino no encontrada"));
+
+        if (departureCity.getCityId().equals(arrivalCity.getCityId())) {
+            throw new InvalidRequestException("La ciudad de origen y destino no pueden ser iguales");
+        }
+
+        if (!flightDTO.getArrivalDateTime().isAfter(flightDTO.getDepartureDateTime())) {
+            throw new InvalidRequestException("La fecha/hora de llegada debe ser posterior a la de salida");
+        }
 
         Flight flight = new Flight();
-        flight.setAirline(flightDTO.getAirline());
-        flight.setFlightNumber(flightDTO.getFlightNumber());
+        mapDTOToEntity(flightDTO, flight);
         flight.setDepartureCity(departureCity);
         flight.setArrivalCity(arrivalCity);
-        flight.setDepartureDate(flightDTO.getDepartureDate());
-        flight.setDepartureTime(flightDTO.getDepartureTime());
-        flight.setArrivalTime(flightDTO.getArrivalTime());
-        flight.setDuration(flightDTO.getDuration());
-        flight.setPrice(flightDTO.getPrice());
-        flight.setAdultNumber(flightDTO.getAdultNumber());
-        flight.setChildNumber(flightDTO.getChildNumber());
-        flight.setFlightClass(flightDTO.getFlightClass());
 
         Flight savedFlight = flightRepository.save(flight);
-        return convertToDTO(savedFlight);
+        return convertToFullDTO(savedFlight);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FlightDTO getFlightById(Long id) {
         Flight flight = flightRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id));
-        return convertToDTO(flight);
+                .orElseThrow(() -> new NoSuchElementException("Vuelo no encontrado con ID: " + id));
+        return convertToFullDTO(flight);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FlightDTO> getAllFlights() {
         return flightRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(this::convertToFullDTO)
                 .collect(Collectors.toList());
     }
 
-    /*@Override
-    public List<FlightDTO> searchFlights(FlightSearchDTO searchDTO) {
-        return flightRepository.findByDepartureCityCityIdAndArrivalCityCityIdAndDepartureDate(
-                        searchDTO.getDepartureCityId(),
-                        searchDTO.getArrivalCityId(),
-                        searchDTO.getDepartureDate()).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
-    }*/
-
     @Override
+    @Transactional
     public FlightDTO updateFlight(Long id, FlightDTO flightDTO) {
         Flight existingFlight = flightRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Flight not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Vuelo no encontrado con ID: " + id));
 
-        if (flightDTO.getAirline() != null) existingFlight.setAirline(flightDTO.getAirline());
-        if (flightDTO.getFlightNumber() != null) existingFlight.setFlightNumber(flightDTO.getFlightNumber());
-        if (flightDTO.getDepartureDate() != null) existingFlight.setDepartureDate(flightDTO.getDepartureDate());
-        if (flightDTO.getDepartureTime() != null) existingFlight.setDepartureTime(flightDTO.getDepartureTime());
-        if (flightDTO.getArrivalTime() != null) existingFlight.setArrivalTime(flightDTO.getArrivalTime());
-        if (flightDTO.getDuration() != null) existingFlight.setDuration(flightDTO.getDuration());
-        if (flightDTO.getPrice() != null) existingFlight.setPrice(flightDTO.getPrice());
-        if (flightDTO.getAdultNumber() != null) existingFlight.setAdultNumber(flightDTO.getAdultNumber());
-        if (flightDTO.getChildNumber() != null) existingFlight.setChildNumber(flightDTO.getChildNumber());
-        if (flightDTO.getFlightClass() != null) existingFlight.setFlightClass(flightDTO.getFlightClass());
+        if (!existingFlight.getFlightNumber().equals(flightDTO.getFlightNumber())) {
+            if (flightRepository.existsByFlightNumber(flightDTO.getFlightNumber())) {
+                throw new DuplicateResourceException("Ya existe un vuelo con este número");
+            }
+        }
+
+        if (flightDTO.getDepartureDateTime() != null && flightDTO.getArrivalDateTime() != null) {
+            if (!flightDTO.getArrivalDateTime().isAfter(flightDTO.getDepartureDateTime())) {
+                throw new InvalidRequestException("La fecha/hora de llegada debe ser posterior a la de salida");
+            }
+        }
 
         if (flightDTO.getDepartureCityId() != null &&
                 !flightDTO.getDepartureCityId().equals(existingFlight.getDepartureCity().getCityId())) {
             City newDepartureCity = cityRepository.findById(flightDTO.getDepartureCityId())
-                    .orElseThrow(() -> new RuntimeException("Departure city not found"));
+                    .orElseThrow(() -> new NoSuchElementException("Ciudad de origen no encontrada"));
             existingFlight.setDepartureCity(newDepartureCity);
         }
 
         if (flightDTO.getArrivalCityId() != null &&
                 !flightDTO.getArrivalCityId().equals(existingFlight.getArrivalCity().getCityId())) {
             City newArrivalCity = cityRepository.findById(flightDTO.getArrivalCityId())
-                    .orElseThrow(() -> new RuntimeException("Arrival city not found"));
+                    .orElseThrow(() -> new NoSuchElementException("Ciudad de destino no encontrada"));
             existingFlight.setArrivalCity(newArrivalCity);
         }
 
+        if (existingFlight.getDepartureCity().getCityId().equals(existingFlight.getArrivalCity().getCityId())) {
+            throw new InvalidRequestException("La ciudad de origen y destino no pueden ser iguales");
+        }
+
+        mapDTOToEntity(flightDTO, existingFlight);
+
         Flight updatedFlight = flightRepository.save(existingFlight);
-        return convertToDTO(updatedFlight);
+        return convertToFullDTO(updatedFlight);
     }
 
     @Override
+    public List<FlightDTO> searchFlights(FlightSearchDTO searchDTO) {
+        LocalDate departureDate = searchDTO.getDepartureDate();
+        LocalDateTime startDateTime = departureDate.atStartOfDay();
+        LocalDateTime endDateTime = departureDate.plusDays(1).atStartOfDay();
+
+        List<Flight> flights = flightRepository.findByDepartureCityCityIdAndArrivalCityCityIdAndDepartureDateTimeBetween(
+                searchDTO.getDepartureCityId(),
+                searchDTO.getArrivalCityId(),
+                startDateTime,
+                endDateTime);
+
+        return flights.stream()
+                .map(this::convertToFullDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
     public void deleteFlight(Long id) {
         if (!flightRepository.existsById(id)) {
-            throw new RuntimeException("Flight not found with id: " + id);
+            throw new NoSuchElementException("Vuelo no encontrado con ID: " + id);
         }
         flightRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FlightDTO> findFlightsByCitiesAndDate(Long departureCityId, Long arrivalCityId, LocalDate date) {
-        return null;
+        if (!cityRepository.existsById(departureCityId)) {
+            throw new NoSuchElementException("Ciudad de origen no encontrada");
+        }
+        if (!cityRepository.existsById(arrivalCityId)) {
+            throw new NoSuchElementException("Ciudad de destino no encontrada");
+        }
+
+        return flightRepository.findByDepartureCityCityIdAndArrivalCityCityIdAndDepartureDateTimeBetween(
+                        departureCityId,
+                        arrivalCityId,
+                        date.atStartOfDay(),
+                        date.plusDays(1).atStartOfDay())
+                .stream()
+                .map(this::convertToFullDTO)
+                .collect(Collectors.toList());
     }
 
-    private FlightDTO convertToDTO(Flight flight) {
+    private void mapDTOToEntity(FlightDTO dto, Flight entity) {
+        if (dto.getFlightNumber() != null) entity.setFlightNumber(dto.getFlightNumber());
+        if (dto.getDepartureDateTime() != null) entity.setDepartureDateTime(dto.getDepartureDateTime());
+        if (dto.getArrivalDateTime() != null) entity.setArrivalDateTime(dto.getArrivalDateTime());
+    }
+
+    private FlightDTO convertToFullDTO(Flight flight) {
         FlightDTO dto = new FlightDTO();
         dto.setFlightId(flight.getFlightId());
-        dto.setAirline(flight.getAirline());
         dto.setFlightNumber(flight.getFlightNumber());
         dto.setDepartureCityId(flight.getDepartureCity().getCityId());
         dto.setDepartureCityName(flight.getDepartureCity().getName());
         dto.setArrivalCityId(flight.getArrivalCity().getCityId());
         dto.setArrivalCityName(flight.getArrivalCity().getName());
-        dto.setDepartureDate(flight.getDepartureDate());
-        dto.setDepartureTime(flight.getDepartureTime());
-        dto.setArrivalTime(flight.getArrivalTime());
-        dto.setDuration(flight.getDuration());
-        dto.setPrice(flight.getPrice());
-        dto.setAdultNumber(flight.getAdultNumber());
-        dto.setChildNumber(flight.getChildNumber());
-        dto.setFlightClass(flight.getFlightClass());
+        dto.setDepartureDateTime(flight.getDepartureDateTime());
+        dto.setArrivalDateTime(flight.getArrivalDateTime());
         return dto;
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,42 +16,32 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long hotelId;
 
+    @NotBlank
+    @Size(max = 100)
+    private String name;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "city_id")
     private City city;
 
     @NotBlank
-    @Size(max = 100)
-    private String name;
-
-    @NotBlank
     @Size(max = 255)
     private String address;
 
-    @Min(1) @Max(5)
-    private Integer starRating;
+    @Size(max = 255)
+    @URL(message = "La URL de la imagen debe ser válida")
+    private String imageUrl;
+
+    @Min(1)
+    @Max(5)
+    private Integer stars;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection
     private List<String> amenities;
-
-    @ElementCollection
-    private List<String> roomTypes;
-
-    @NotNull
-    @PositiveOrZero
-    private Double pricePerNight;
-
-    @NotNull
-    @Min(1)
-    private Integer maxAdults;
-
-    @NotNull
-    @Min(0)
-    private Integer maxChildren;
 
     @NotBlank
     @Size(max = 50)
@@ -62,11 +53,10 @@ public class Hotel {
 
     @Email
     @Size(max = 100)
-    private String contactEmail;
+    private String email;
 
     @Size(max = 20)
-    private String contactPhone;
-
+    private String phone;
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -77,22 +67,19 @@ public class Hotel {
 
     public Hotel(){}
 
-    public Hotel(Long hotelId, City city, String name, String address, Integer starRating, String description, List<String> amenities, List<String> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String checkInTime, String checkOutTime, String contactEmail, String contactPhone, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Hotel(Long hotelId, String name, City city, String address, String imageUrl, Integer stars, String description, List<String> amenities, String checkInTime, String checkOutTime, String email, String phone, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.hotelId = hotelId;
-        this.city = city;
         this.name = name;
+        this.city = city;
         this.address = address;
-        this.starRating = starRating;
+        this.imageUrl = imageUrl;
+        this.stars = stars;
         this.description = description;
         this.amenities = amenities;
-        this.roomTypes = roomTypes;
-        this.pricePerNight = pricePerNight;
-        this.maxAdults = maxAdults;
-        this.maxChildren = maxChildren;
         this.checkInTime = checkInTime;
         this.checkOutTime = checkOutTime;
-        this.contactEmail = contactEmail;
-        this.contactPhone = contactPhone;
+        this.email = email;
+        this.phone = phone;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -105,20 +92,20 @@ public class Hotel {
         this.hotelId = hotelId;
     }
 
-    public City getCity() {
-        return city;
-    }
-
-    public void setCity(City city) {
-        this.city = city;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public String getAddress() {
@@ -129,12 +116,20 @@ public class Hotel {
         this.address = address;
     }
 
-    public Integer getStarRating() {
-        return starRating;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setStarRating(Integer starRating) {
-        this.starRating = starRating;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getStars() {
+        return stars;
+    }
+
+    public void setStars(Integer stars) {
+        this.stars = stars;
     }
 
     public String getDescription() {
@@ -153,38 +148,6 @@ public class Hotel {
         this.amenities = amenities;
     }
 
-    public List<String> getRoomTypes() {
-        return roomTypes;
-    }
-
-    public void setRoomTypes(List<String> roomTypes) {
-        this.roomTypes = roomTypes;
-    }
-
-    public Double getPricePerNight() {
-        return pricePerNight;
-    }
-
-    public void setPricePerNight(Double pricePerNight) {
-        this.pricePerNight = pricePerNight;
-    }
-
-    public Integer getMaxAdults() {
-        return maxAdults;
-    }
-
-    public void setMaxAdults(Integer maxAdults) {
-        this.maxAdults = maxAdults;
-    }
-
-    public Integer getMaxChildren() {
-        return maxChildren;
-    }
-
-    public void setMaxChildren(Integer maxChildren) {
-        this.maxChildren = maxChildren;
-    }
-
     public String getCheckInTime() {
         return checkInTime;
     }
@@ -201,20 +164,20 @@ public class Hotel {
         this.checkOutTime = checkOutTime;
     }
 
-    public String getContactEmail() {
-        return contactEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getContactPhone() {
-        return contactPhone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public LocalDateTime getCreatedAt() {

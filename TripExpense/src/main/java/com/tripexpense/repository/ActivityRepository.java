@@ -16,4 +16,5 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
     List<Activity> findByCategoryIgnoreCase(String category);
 
     boolean existsByNameAndCityCityId(String name, Long cityId);
+
 }

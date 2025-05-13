@@ -14,5 +14,8 @@ public interface SearchQueryRepository extends JpaRepository<SearchQuery, Long> 
     List<SearchQuery> findByUserOrderBySearchDate(User user);
     List<SearchQuery> findBySearchDateAfter(LocalDateTime date);
 
-    List<SearchQuery> findByUserIdOrderBySearchDateDesc(Long userId);
+    List<SearchQuery> findByUserIdOrderBySearchDateDesc(Long id);
+
+
+
 }

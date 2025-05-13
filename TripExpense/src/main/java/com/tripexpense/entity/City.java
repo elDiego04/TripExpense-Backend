@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
@@ -26,6 +27,10 @@ public class City {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Size(max = 255)
+    @URL(message = "La URL de la imagen debe ser válida")
+    private String imageUrl;
+
     @Size(max = 50)
     private String language;
 
@@ -45,14 +50,14 @@ public class City {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
     public City(){}
 
-    public City(Long cityId, String name, String country, String description, String language, String currency, String climate, String bestTimeToVisit, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.cityId = cityId;
+    public City(Long id, String name, String country, String description, String imageUrl, String language, String currency, String climate, String bestTimeToVisit, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.cityId = id;
         this.name = name;
         this.country = country;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.language = language;
         this.currency = currency;
         this.climate = climate;
@@ -91,6 +96,14 @@ public class City {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getLanguage() {

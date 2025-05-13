@@ -9,7 +9,8 @@ public class FlightSearchDTO {
     private Integer adults;
     private Integer children;
 
-    public FlightSearchDTO(){}
+    public FlightSearchDTO() {
+    }
 
     public FlightSearchDTO(Long departureCityId, Long arrivalCityId, LocalDate departureDate, Integer adults, Integer children) {
         this.departureCityId = departureCityId;

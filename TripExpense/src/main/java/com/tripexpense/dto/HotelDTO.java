@@ -1,21 +1,15 @@
 package com.tripexpense.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
 
 public class HotelDTO {
-
     private Long hotelId;
-    @NotBlank
-    private Long cityId;
-    @NotBlank
-    private String cityName;
 
     @NotNull
-    private CityDTO city;
+    private Long cityId;
 
     @NotBlank
     @Size(max = 100)
@@ -25,29 +19,17 @@ public class HotelDTO {
     @Size(max = 255)
     private String address;
 
-    @Min(1) @Max(5)
-    private Integer starRating;
+    @Size(max = 255)
+    @URL(message = "La URL de la imagen debe ser válida")
+    private String imageUrl;
 
-    @Column(columnDefinition = "TEXT")
+    @Min(1)
+    @Max(5)
+    private Integer stars;
+
     private String description;
 
-    @ElementCollection
     private List<String> amenities;
-
-    @ElementCollection
-    private List<String> roomTypes;
-
-    @NotNull
-    @PositiveOrZero
-    private Double pricePerNight;
-
-    @NotNull
-    @Min(1)
-    private Integer maxAdults;
-
-    @NotNull
-    @Min(0)
-    private Integer maxChildren;
 
     @NotBlank
     @Size(max = 50)
@@ -59,31 +41,25 @@ public class HotelDTO {
 
     @Email
     @Size(max = 100)
-    private String contactEmail;
+    private String email;
 
     @Size(max = 20)
-    private String contactPhone;
+    private String phone;
 
     public HotelDTO(){}
-
-    public HotelDTO(Long hotelId, Long cityId, String cityName, CityDTO city, String name, String address, Integer starRating, String description, List<String> amenities, List<String> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String checkInTime, String checkOutTime, String contactEmail, String contactPhone) {
+    public HotelDTO(Long hotelId, Long cityId, String name, String address, String imageUrl, Integer stars, String description, List<String> amenities, String checkInTime, String checkOutTime, String email, String phone) {
         this.hotelId = hotelId;
         this.cityId = cityId;
-        this.cityName = cityName;
-        this.city = city;
         this.name = name;
         this.address = address;
-        this.starRating = starRating;
+        this.imageUrl = imageUrl;
+        this.stars = stars;
         this.description = description;
         this.amenities = amenities;
-        this.roomTypes = roomTypes;
-        this.pricePerNight = pricePerNight;
-        this.maxAdults = maxAdults;
-        this.maxChildren = maxChildren;
         this.checkInTime = checkInTime;
         this.checkOutTime = checkOutTime;
-        this.contactEmail = contactEmail;
-        this.contactPhone = contactPhone;
+        this.email = email;
+        this.phone = phone;
     }
 
     public Long getHotelId() {
@@ -102,22 +78,6 @@ public class HotelDTO {
         this.cityId = cityId;
     }
 
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public CityDTO getCity() {
-        return city;
-    }
-
-    public void setCity(CityDTO city) {
-        this.city = city;
-    }
-
     public String getName() {
         return name;
     }
@@ -134,12 +94,20 @@ public class HotelDTO {
         this.address = address;
     }
 
-    public Integer getStarRating() {
-        return starRating;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setStarRating(Integer starRating) {
-        this.starRating = starRating;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public Integer getStars() {
+        return stars;
+    }
+
+    public void setStars(Integer stars) {
+        this.stars = stars;
     }
 
     public String getDescription() {
@@ -158,38 +126,6 @@ public class HotelDTO {
         this.amenities = amenities;
     }
 
-    public List<String> getRoomTypes() {
-        return roomTypes;
-    }
-
-    public void setRoomTypes(List<String> roomTypes) {
-        this.roomTypes = roomTypes;
-    }
-
-    public Double getPricePerNight() {
-        return pricePerNight;
-    }
-
-    public void setPricePerNight(Double pricePerNight) {
-        this.pricePerNight = pricePerNight;
-    }
-
-    public Integer getMaxAdults() {
-        return maxAdults;
-    }
-
-    public void setMaxAdults(Integer maxAdults) {
-        this.maxAdults = maxAdults;
-    }
-
-    public Integer getMaxChildren() {
-        return maxChildren;
-    }
-
-    public void setMaxChildren(Integer maxChildren) {
-        this.maxChildren = maxChildren;
-    }
-
     public String getCheckInTime() {
         return checkInTime;
     }
@@ -206,22 +142,29 @@ public class HotelDTO {
         this.checkOutTime = checkOutTime;
     }
 
-    public String getContactEmail() {
-        return contactEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getContactPhone() {
-        return contactPhone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public void setAverageRating(Double calculateAverageRating) {
+    private String cityName;
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 }

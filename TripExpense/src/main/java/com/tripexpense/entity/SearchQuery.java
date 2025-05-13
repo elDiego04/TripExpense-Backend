@@ -47,6 +47,18 @@ public class SearchQuery {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @PrePersist
+    @PreUpdate
+    private void validateDatesAndCities() {
+        if (returnDate != null && !returnDate.isAfter(departureDate)) {
+            throw new IllegalArgumentException("La fecha de regreso debe ser posterior a la fecha de salida");
+        }
+
+        if (originCity != null && originCity.equals(destinationCity)) {
+            throw new IllegalArgumentException("La ciudad de origen y destino no pueden ser iguales");
+        }
+    }
+
     public SearchQuery(){}
     public SearchQuery(Long searchId, City originCity, City destinationCity, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, LocalDateTime searchDate, User user) {
         this.searchId = searchId;

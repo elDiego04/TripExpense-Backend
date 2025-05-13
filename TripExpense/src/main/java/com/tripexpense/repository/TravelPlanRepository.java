@@ -13,8 +13,8 @@ import java.util.List;
 public interface TravelPlanRepository extends JpaRepository<TravelPlan, Long> {
 
     List<TravelPlan> findByUser(UserDTO userDTO);
-    List<TravelPlan> findByDepartureDate(LocalDate departureDate);
-    List<TravelPlan> findByDestinationCity_Name(String cityName);
+    List<TravelPlan> findByStartDate(LocalDate startDate);
+    List<TravelPlan> findByDestination_Name(String name);
     List<TravelPlan> findByStatus(PlanStatus travelPlanStatus);
 
     List<TravelPlan> findByUserId(Long userId);

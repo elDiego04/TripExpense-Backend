@@ -6,6 +6,7 @@ import com.tripexpense.service.impl.HotelServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class HotelController {
     private HotelRepository hotelRepository;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> createHotel(@RequestBody HotelDTO hotelDTO) {
         try {
             if (hotelRepository.existsByNameAndCityCityId(hotelDTO.getName(), hotelDTO.getCityId())) {
@@ -84,6 +86,7 @@ public class HotelController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> updateHotel(@PathVariable Long id, @RequestBody HotelDTO hotelDTO) {
         try {
             HotelDTO updatedHotel = hotelService.updateHotel(id, hotelDTO);
@@ -103,6 +106,7 @@ public class HotelController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteHotel(@PathVariable Long id) {
         try {
             if (!hotelRepository.existsById(id)) {
