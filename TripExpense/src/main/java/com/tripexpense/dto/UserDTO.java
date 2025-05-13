@@ -1,44 +1,59 @@
 package com.tripexpense.dto;
 
-import jakarta.validation.constraints.*;
+import com.tripexpense.enums.Role;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
 
 public class UserDTO {
+    private Long Id;
 
-    private Long id;
-
-    @Email(message = "El email no es válido")
-    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Email no válido")
+    @NotBlank(message = "Email es obligatorio")
     private String email;
 
-    @NotBlank(message = "La contraseña es obligatoria")
+    @NotBlank(message = "Contraseña es obligatoria")
     @Size(min = 7, message = "La contraseña debe tener al menos 7 caracteres")
     private String password;
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank(message = "Nombre es obligatorio")
     private String firstName;
 
-    @NotBlank(message = "El apellido es obligatorio")
+    @NotBlank(message = "Apellido es obligatorio")
     private String lastName;
 
-    @Pattern(regexp = "^[0-9]{10,15}$", message = "El teléfono debe tener entre 10 y 15 dígitos")
+    @Size(max = 255)
+    @URL(message = "La URL del avatar debe ser válida")
+    private String avatarUrl;
+
+    @Pattern(regexp = "^[0-9]{10,15}$", message = "Teléfono debe tener entre 10 y 15 dígitos")
     private String phone;
 
-    public UserDTO(){}
-    public UserDTO(Long id, String email, String password, String firstName, String lastName, String phone) {
-        this.id = id;
+    @Column(nullable = false)
+    private Role role;
+
+    public UserDTO() {}
+
+    public UserDTO(Long id, String email, String password, String firstName, String lastName, String avatarUrl, String phone, Role role) {
+        Id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.avatarUrl = avatarUrl;
         this.phone = phone;
+        this.role = role;
     }
 
     public Long getId() {
-        return id;
+        return Id;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        Id = id;
     }
 
     public String getEmail() {
@@ -73,6 +88,14 @@ public class UserDTO {
         this.lastName = lastName;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -80,4 +103,13 @@ public class UserDTO {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
 }

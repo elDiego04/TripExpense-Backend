@@ -3,135 +3,147 @@ package com.tripexpense.service.impl;
 import com.tripexpense.dto.HotelDTO;
 import com.tripexpense.entity.City;
 import com.tripexpense.entity.Hotel;
+import com.tripexpense.exception.DuplicateResourceException;
 import com.tripexpense.repository.CityRepository;
 import com.tripexpense.repository.HotelRepository;
 import com.tripexpense.service.interfac.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
 public class HotelServiceImpl implements HotelService {
 
+    private final HotelRepository hotelRepository;
+    private final CityRepository cityRepository;
+
     @Autowired
-    private HotelRepository hotelRepository;
-    @Autowired
-    private CityRepository cityRepository;
+    public HotelServiceImpl(HotelRepository hotelRepository, CityRepository cityRepository) {
+        this.hotelRepository = hotelRepository;
+        this.cityRepository = cityRepository;
+    }
 
     @Override
+    @Transactional
     public HotelDTO createHotel(HotelDTO hotelDTO) {
         if (hotelRepository.existsByName(hotelDTO.getName())) {
-            throw new RuntimeException("Hotel name already exists");
+            throw new DuplicateResourceException("Ya existe un hotel con este nombre");
         }
 
         City city = cityRepository.findById(hotelDTO.getCityId())
-                .orElseThrow(() -> new RuntimeException("City not found"));
+                .orElseThrow(() -> new NoSuchElementException("Ciudad no encontrada"));
 
         Hotel hotel = new Hotel();
-        hotel.setName(hotelDTO.getName());
+        mapDTOToEntity(hotelDTO, hotel);
         hotel.setCity(city);
-        hotel.setAddress(hotelDTO.getAddress());
-        hotel.setStarRating(hotelDTO.getStarRating());
-        hotel.setDescription(hotelDTO.getDescription());
-        hotel.setAmenities(new ArrayList<>(hotelDTO.getAmenities()));
-        hotel.setRoomTypes(new ArrayList<>(hotelDTO.getRoomTypes()));
-        hotel.setPricePerNight(hotelDTO.getPricePerNight());
-        hotel.setMaxAdults(hotelDTO.getMaxAdults());
-        hotel.setMaxChildren(hotelDTO.getMaxChildren());
-        hotel.setCheckInTime(hotelDTO.getCheckInTime());
-        hotel.setCheckOutTime(hotelDTO.getCheckOutTime());
-        hotel.setContactEmail(hotelDTO.getContactEmail());
-        hotel.setContactPhone(hotelDTO.getContactPhone());
 
         Hotel savedHotel = hotelRepository.save(hotel);
-        return convertToDTO(savedHotel);
+        return convertToFullDTO(savedHotel);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public HotelDTO getHotelById(Long id) {
         Hotel hotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel not found with id: " + id));
-        return convertToDTO(hotel);
+                .orElseThrow(() -> new NoSuchElementException("Hotel no encontrado con ID: " + id));
+        return convertToFullDTO(hotel);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelDTO> getAllHotels() {
         return hotelRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(this::convertToFullDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelDTO> getHotelsByCity(Long cityId) {
+        if (!cityRepository.existsById(cityId)) {
+            throw new NoSuchElementException("Ciudad no encontrada con ID: " + cityId);
+        }
+
         return hotelRepository.findByCityCityId(cityId).stream()
-                .map(this::convertToDTO)
+                .map(this::convertToFullDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public HotelDTO updateHotel(Long id, HotelDTO hotelDTO) {
         Hotel existingHotel = hotelRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Hotel not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Hotel no encontrado con ID: " + id));
 
-        if (hotelDTO.getName() != null) existingHotel.setName(hotelDTO.getName());
-        if (hotelDTO.getAddress() != null) existingHotel.setAddress(hotelDTO.getAddress());
-        if (hotelDTO.getStarRating() != null) existingHotel.setStarRating(hotelDTO.getStarRating());
-        if (hotelDTO.getDescription() != null) existingHotel.setDescription(hotelDTO.getDescription());
-        if (hotelDTO.getAmenities() != null) existingHotel.setAmenities(new ArrayList<>(hotelDTO.getAmenities()));
-        if (hotelDTO.getRoomTypes() != null) existingHotel.setRoomTypes(new ArrayList<>(hotelDTO.getRoomTypes()));
-        if (hotelDTO.getPricePerNight() != null) existingHotel.setPricePerNight(hotelDTO.getPricePerNight());
-        if (hotelDTO.getMaxAdults() != null) existingHotel.setMaxAdults(hotelDTO.getMaxAdults());
-        if (hotelDTO.getMaxChildren() != null) existingHotel.setMaxChildren(hotelDTO.getMaxChildren());
-        if (hotelDTO.getCheckInTime() != null) existingHotel.setCheckInTime(hotelDTO.getCheckInTime());
-        if (hotelDTO.getCheckOutTime() != null) existingHotel.setCheckOutTime(hotelDTO.getCheckOutTime());
-        if (hotelDTO.getContactEmail() != null) existingHotel.setContactEmail(hotelDTO.getContactEmail());
-        if (hotelDTO.getContactPhone() != null) existingHotel.setContactPhone(hotelDTO.getContactPhone());
+        if (!existingHotel.getName().equals(hotelDTO.getName())) {
+            if (hotelRepository.existsByName(hotelDTO.getName())) {
+                throw new DuplicateResourceException("Ya existe un hotel con este nombre");
+            }
+        }
 
-        if (hotelDTO.getCityId() != null && !hotelDTO.getCityId().equals(existingHotel.getCity().getCityId())) {
+        if (hotelDTO.getCityId() != null &&
+                !hotelDTO.getCityId().equals(existingHotel.getCity().getCityId())) {
             City newCity = cityRepository.findById(hotelDTO.getCityId())
-                    .orElseThrow(() -> new RuntimeException("City not found"));
+                    .orElseThrow(() -> new NoSuchElementException("Ciudad no encontrada"));
             existingHotel.setCity(newCity);
         }
 
+        mapDTOToEntity(hotelDTO, existingHotel);
+
         Hotel updatedHotel = hotelRepository.save(existingHotel);
-        return convertToDTO(updatedHotel);
+        return convertToFullDTO(updatedHotel);
     }
 
     @Override
+    @Transactional
     public void deleteHotel(Long id) {
         if (!hotelRepository.existsById(id)) {
-            throw new RuntimeException("Hotel not found with id: " + id);
+            throw new NoSuchElementException("Hotel no encontrado con ID: " + id);
         }
         hotelRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<HotelDTO> searchHotels(String query) {
         return hotelRepository.findByNameContainingIgnoreCase(query).stream()
-                .map(this::convertToDTO)
+                .map(this::convertToFullDTO)
                 .collect(Collectors.toList());
     }
 
-    private HotelDTO convertToDTO(Hotel hotel) {
+    private void mapDTOToEntity(HotelDTO dto, Hotel entity) {
+        if (dto.getName() != null) entity.setName(dto.getName());
+        if (dto.getAddress() != null) entity.setAddress(dto.getAddress());
+        if (dto.getImageUrl() != null) entity.setImageUrl(dto.getImageUrl());
+        if (dto.getStars() != null) entity.setStars(dto.getStars());
+        if (dto.getDescription() != null) entity.setDescription(dto.getDescription());
+        if (dto.getAmenities() != null) entity.setAmenities(new ArrayList<>(dto.getAmenities()));
+        if (dto.getCheckInTime() != null) entity.setCheckInTime(dto.getCheckInTime());
+        if (dto.getCheckOutTime() != null) entity.setCheckOutTime(dto.getCheckOutTime());
+        if (dto.getEmail() != null) entity.setEmail(dto.getEmail());
+        if (dto.getPhone() != null) entity.setPhone(dto.getPhone());
+    }
+
+    private HotelDTO convertToFullDTO(Hotel hotel) {
         HotelDTO dto = new HotelDTO();
         dto.setHotelId(hotel.getHotelId());
         dto.setCityId(hotel.getCity().getCityId());
+        dto.setCityName(hotel.getCity().getName());
         dto.setName(hotel.getName());
         dto.setAddress(hotel.getAddress());
-        dto.setStarRating(hotel.getStarRating());
+        dto.setImageUrl(hotel.getImageUrl());
+        dto.setStars(hotel.getStars());
         dto.setDescription(hotel.getDescription());
         dto.setAmenities(new ArrayList<>(hotel.getAmenities()));
-        dto.setRoomTypes(new ArrayList<>(hotel.getRoomTypes()));
-        dto.setPricePerNight(hotel.getPricePerNight());
-        dto.setMaxAdults(hotel.getMaxAdults());
-        dto.setMaxChildren(hotel.getMaxChildren());
         dto.setCheckInTime(hotel.getCheckInTime());
         dto.setCheckOutTime(hotel.getCheckOutTime());
-        dto.setContactEmail(hotel.getContactEmail());
-        dto.setContactPhone(hotel.getContactPhone());
+        dto.setEmail(hotel.getEmail());
+        dto.setPhone(hotel.getPhone());
         return dto;
     }
 }

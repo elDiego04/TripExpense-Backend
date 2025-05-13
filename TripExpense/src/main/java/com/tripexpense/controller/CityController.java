@@ -6,6 +6,7 @@ import com.tripexpense.service.impl.CityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class CityController {
     private CityRepository cityRepository;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> createCity(@RequestBody CityDTO cityDTO) {
         try {
             if (cityRepository.existsByNameAndCountry(cityDTO.getName(), cityDTO.getCountry())) {
@@ -84,6 +86,7 @@ public class CityController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> updateCity(@PathVariable Long id, @RequestBody CityDTO cityDTO) {
         try {
             CityDTO updatedCity = cityService.updateCity(id, cityDTO);
@@ -103,6 +106,7 @@ public class CityController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> deleteCity(@PathVariable Long id) {
         try {
             if (!cityRepository.existsById(id)) {

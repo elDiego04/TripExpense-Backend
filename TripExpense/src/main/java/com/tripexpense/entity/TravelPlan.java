@@ -31,10 +31,10 @@ public class TravelPlan {
 
     @NotNull
     @FutureOrPresent
-    private LocalDate departureDate;
+    private LocalDate startDate;
 
     @Future
-    private LocalDate returnDate;
+    private LocalDate endDate;
 
     @NotNull
     @Min(1)
@@ -52,13 +52,15 @@ public class TravelPlan {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "destination_city_id")
-    private City destinationCity;
+    @JoinColumn(name = "destination_id")
+    private City destination;
 
     @ManyToOne
+    @JoinColumn(name = "flight_id")
     private Flight flight;
 
     @ManyToOne
+    @JoinColumn(name = "hotel_id")
     private Hotel hotel;
 
     @ManyToMany
@@ -79,20 +81,28 @@ public class TravelPlan {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    @PreUpdate
+    private void validateDates() {
+        if (endDate != null && !endDate.isAfter(startDate)) {
+            throw new IllegalArgumentException("La fecha de regreso debe ser posterior a la fecha de salida");
+        }
+    }
+
     public TravelPlan(){}
 
-    public TravelPlan(Long travelPlanId, User user, String title, String description, LocalDate departureDate, LocalDate returnDate, Integer adults, Integer children, Double totalCost, PlanStatus status, City destinationCity, Flight flight, Hotel hotel, List<Activity> activities, String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.travelPlanId = travelPlanId;
+    public TravelPlan(Long id, User user, String title, String description, LocalDate startDate, LocalDate endDate, Integer adults, Integer children, Double totalCost, PlanStatus status, City destination, Flight flight, Hotel hotel, List<Activity> activities, String notes, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.travelPlanId = id;
         this.user = user;
         this.title = title;
         this.description = description;
-        this.departureDate = departureDate;
-        this.returnDate = returnDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.adults = adults;
         this.children = children;
         this.totalCost = totalCost;
         this.status = status;
-        this.destinationCity = destinationCity;
+        this.destination = destination;
         this.flight = flight;
         this.hotel = hotel;
         this.activities = activities;
@@ -133,20 +143,20 @@ public class TravelPlan {
         this.description = description;
     }
 
-    public LocalDate getDepartureDate() {
-        return departureDate;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setDepartureDate(LocalDate departureDate) {
-        this.departureDate = departureDate;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public LocalDate getReturnDate() {
-        return returnDate;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setReturnDate(LocalDate returnDate) {
-        this.returnDate = returnDate;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public Integer getAdults() {
@@ -181,12 +191,12 @@ public class TravelPlan {
         this.status = status;
     }
 
-    public City getDestinationCity() {
-        return destinationCity;
+    public City getDestination() {
+        return destination;
     }
 
-    public void setDestinationCity(City destinationCity) {
-        this.destinationCity = destinationCity;
+    public void setDestination(City destination) {
+        this.destination = destination;
     }
 
     public Flight getFlight() {

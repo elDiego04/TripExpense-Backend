@@ -66,7 +66,7 @@ public class AuthController {
                         .body("Credenciales incorrectas");
             }
 
-            return ResponseEntity.ok(loginResponse); // 200 OK
+            return ResponseEntity.ok(loginResponse);
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
