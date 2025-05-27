@@ -3,46 +3,59 @@ package com.tripexpense.dto;
 import com.tripexpense.enums.RoomType;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class HotelBookingDTO {
+
     private Long id;
 
-    @NotNull
+    @NotNull(message = "El ID del hotel es obligatorio")
+    @Positive(message = "El ID del hotel debe ser un número positivo")
     private Long hotelId;
 
-    @NotNull
+    @NotNull(message = "El ID del usuario es obligatorio")
+    @Positive(message = "El ID del usuario debe ser un número positivo")
+    private Long userId;
+
+    @NotNull(message = "Debe seleccionar al menos un tipo de habitación")
+    @Size(min = 1, message = "Debe seleccionar al menos un tipo de habitación")
     private List<RoomType> roomTypes;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "El precio por noche es obligatorio")
+    @PositiveOrZero(message = "El precio por noche no puede ser negativo")
     private Double pricePerNight;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "Debe especificar la cantidad máxima de adultos")
+    @Min(value = 1, message = "Debe haber al menos un adulto")
     private Integer maxAdults;
 
-    @NotNull
-    @Min(0)
+    @NotNull(message = "Debe especificar la cantidad máxima de niños")
+    @Min(value = 0, message = "La cantidad de niños no puede ser negativa")
     private Integer maxChildren;
 
-    @Size(max = 255)
-    private String cancellationPolicy;
+    @NotNull(message = "La fecha de inicio es obligatoria")
+    @FutureOrPresent(message = "La fecha de inicio no puede estar en el pasado")
+    private LocalDate startDate;
 
-    @Size(max = 255)
-    private String refundPolicy;
+    @NotNull(message = "La fecha de finalización es obligatoria")
+    @Future(message = "La fecha de finalización debe ser una fecha futura")
+    private LocalDate endDate;
 
-    public HotelBookingDTO(){}
+    public HotelBookingDTO() {
+    }
 
-    public HotelBookingDTO(Long id, Long hotelId, List<RoomType> roomTypes, Double pricePerNight, Integer maxAdults, Integer maxChildren, String cancellationPolicy, String refundPolicy) {
+    public HotelBookingDTO(Long id, Long hotelId, Long userId, List<RoomType> roomTypes, Double pricePerNight,
+                           Integer maxAdults, Integer maxChildren, LocalDate startDate, LocalDate endDate) {
         this.id = id;
         this.hotelId = hotelId;
+        this.userId = userId;
         this.roomTypes = roomTypes;
         this.pricePerNight = pricePerNight;
         this.maxAdults = maxAdults;
         this.maxChildren = maxChildren;
-        this.cancellationPolicy = cancellationPolicy;
-        this.refundPolicy = refundPolicy;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public Long getId() {
@@ -59,6 +72,14 @@ public class HotelBookingDTO {
 
     public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public List<RoomType> getRoomTypes() {
@@ -93,19 +114,19 @@ public class HotelBookingDTO {
         this.maxChildren = maxChildren;
     }
 
-    public String getCancellationPolicy() {
-        return cancellationPolicy;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setCancellationPolicy(String cancellationPolicy) {
-        this.cancellationPolicy = cancellationPolicy;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
-    public String getRefundPolicy() {
-        return refundPolicy;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setRefundPolicy(String refundPolicy) {
-        this.refundPolicy = refundPolicy;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 }
