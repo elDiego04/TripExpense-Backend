@@ -20,7 +20,6 @@ public class Activity {
     @JoinColumn(name = "city_id")
     private City city;
 
-    @Column(length = 1000)
     private String description;
 
     @Size(max = 255)
