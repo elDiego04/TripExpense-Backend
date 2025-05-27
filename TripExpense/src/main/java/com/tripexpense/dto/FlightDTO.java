@@ -1,18 +1,14 @@
 package com.tripexpense.dto;
 
-import com.tripexpense.enums.FlightClass;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
 public class FlightDTO {
-    private Long flightId;
-    private String departureCityName;
-    private String arrivalCityName;
 
-    private Long departureCityId;
-    private Long arrivalCityId;
+    private Long flightId;
+
     @NotBlank(message = "La aerolínea es obligatoria")
     @Size(max = 100)
     private String airline;
@@ -25,57 +21,36 @@ public class FlightDTO {
     @Size(max = 20)
     private String flightNumber;
 
-    @NotNull(message = "La fecha/hora de salida es obligatoria")
-    @FutureOrPresent(message = "La fecha/hora de salida debe ser en el presente o futuro")
+    @NotNull(message = "La ciudad de origen es obligatoria")
+    private Long departureCityId;
+
+    @NotNull(message = "La ciudad de destino es obligatoria")
+    private Long arrivalCityId;
+
+    @NotNull(message = "La hora de salida es obligatoria")
     private LocalDateTime departureDateTime;
 
-    @NotNull(message = "La fecha/hora de llegada es obligatoria")
+    @NotNull(message = "La hora de llegada es obligatoria")
     private LocalDateTime arrivalDateTime;
 
-    @NotNull
-    @Positive(message = "La duración en minutos debe ser positiva")
+    @NotNull(message = "La duración es obligatoria")
+    @Positive(message = "La duración debe ser positiva")
     private Integer durationMinutes;
 
-    @NotNull
-    @PositiveOrZero(message = "El precio no puede ser negativo")
-    private Double price;
+    public FlightDTO() {}
 
-    @Min(value = 1, message = "Debe haber al menos 1 adulto")
-    private Integer adults;
-
-    @Min(value = 0, message = "El número de niños no puede ser negativo")
-    private Integer children;
-
-    @NotNull
-    private FlightClass flightClass;
-
-    public void validate() {
-        if (departureCityId != null && departureCityId.equals(arrivalCityId)) {
-            throw new IllegalArgumentException("La ciudad de origen y destino no pueden ser iguales");
-        }
-        if (arrivalDateTime != null && !arrivalDateTime.isAfter(departureDateTime)) {
-            throw new IllegalArgumentException("La fecha/hora de llegada debe ser posterior a la de salida");
-        }
-    }
-
-    public FlightDTO(){}
-
-    public FlightDTO(Long flightId, String departureCityName, String arrivalCityName, Long departureCityId, Long arrivalCityId, String airline, String airlineLogoUrl, String flightNumber, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime, Integer durationMinutes, Double price, Integer adults, Integer children, FlightClass flightClass) {
+    public FlightDTO(Long flightId, String airline, String airlineLogoUrl, String flightNumber,
+                     Long departureCityId, Long arrivalCityId, LocalDateTime departureDateTime,
+                     LocalDateTime arrivalDateTime, Integer durationMinutes) {
         this.flightId = flightId;
-        this.departureCityName = departureCityName;
-        this.arrivalCityName = arrivalCityName;
-        this.departureCityId = departureCityId;
-        this.arrivalCityId = arrivalCityId;
         this.airline = airline;
         this.airlineLogoUrl = airlineLogoUrl;
         this.flightNumber = flightNumber;
+        this.departureCityId = departureCityId;
+        this.arrivalCityId = arrivalCityId;
         this.departureDateTime = departureDateTime;
         this.arrivalDateTime = arrivalDateTime;
         this.durationMinutes = durationMinutes;
-        this.price = price;
-        this.adults = adults;
-        this.children = children;
-        this.flightClass = flightClass;
     }
 
     public Long getFlightId() {
@@ -84,38 +59,6 @@ public class FlightDTO {
 
     public void setFlightId(Long flightId) {
         this.flightId = flightId;
-    }
-
-    public Long getDepartureCityId() {
-        return departureCityId;
-    }
-
-    public void setDepartureCityId(Long departureCityId) {
-        this.departureCityId = departureCityId;
-    }
-
-    public Long getArrivalCityId() {
-        return arrivalCityId;
-    }
-
-    public void setArrivalCityId(Long arrivalCityId) {
-        this.arrivalCityId = arrivalCityId;
-    }
-
-    public String getDepartureCityName() {
-        return departureCityName;
-    }
-
-    public void setDepartureCityName(String departureCityName) {
-        this.departureCityName = departureCityName;
-    }
-
-    public String getArrivalCityName() {
-        return arrivalCityName;
-    }
-
-    public void setArrivalCityName(String arrivalCityName) {
-        this.arrivalCityName = arrivalCityName;
     }
 
     public String getAirline() {
@@ -142,6 +85,22 @@ public class FlightDTO {
         this.flightNumber = flightNumber;
     }
 
+    public Long getDepartureCityId() {
+        return departureCityId;
+    }
+
+    public void setDepartureCityId(Long departureCityId) {
+        this.departureCityId = departureCityId;
+    }
+
+    public Long getArrivalCityId() {
+        return arrivalCityId;
+    }
+
+    public void setArrivalCityId(Long arrivalCityId) {
+        this.arrivalCityId = arrivalCityId;
+    }
+
     public LocalDateTime getDepartureDateTime() {
         return departureDateTime;
     }
@@ -164,37 +123,5 @@ public class FlightDTO {
 
     public void setDurationMinutes(Integer durationMinutes) {
         this.durationMinutes = durationMinutes;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public Integer getAdults() {
-        return adults;
-    }
-
-    public void setAdults(Integer adults) {
-        this.adults = adults;
-    }
-
-    public Integer getChildren() {
-        return children;
-    }
-
-    public void setChildren(Integer children) {
-        this.children = children;
-    }
-
-    public FlightClass getFlightClass() {
-        return flightClass;
-    }
-
-    public void setFlightClass(FlightClass flightClass) {
-        this.flightClass = flightClass;
     }
 }

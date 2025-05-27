@@ -1,8 +1,7 @@
 package com.tripexpense.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-
+import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,30 +10,33 @@ public class ActivityBooking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bookingId;
+    private Long activityBookingId;
 
     @ManyToOne
     @JoinColumn(name = "activity_id")
     private Activity activity;
 
-    @NotNull
+    @NotNull(message = "El usuario es obligatorio")
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    @NotNull
+    @NotNull(message = "Debe indicar el número de personas")
+    @Min(value = 1, message = "Debe haber al menos una persona")
     private Integer numberOfPeople;
 
-    @NotNull
+    @NotNull(message = "La fecha de reserva es obligatoria")
+    @Future(message = "La fecha de reserva debe ser en el futuro")
     private LocalDateTime bookingDate;
 
-    @NotNull
+    @NotNull(message = "El precio total es obligatorio")
+    @Positive(message = "El precio total debe ser mayor que cero")
     private Double totalPrice;
 
     public ActivityBooking() {}
 
     public ActivityBooking(Long bookingId, Activity activity, User user, Integer numberOfPeople, LocalDateTime bookingDate, Double totalPrice) {
-        this.bookingId = bookingId;
+        this.activityBookingId = bookingId;
         this.activity = activity;
         this.user = user;
         this.numberOfPeople = numberOfPeople;
@@ -42,12 +44,12 @@ public class ActivityBooking {
         this.totalPrice = totalPrice;
     }
 
-    public Long getBookingId() {
-        return bookingId;
+    public Long getActivityBookingId() {
+        return activityBookingId;
     }
 
-    public void setBookingId(Long bookingId) {
-        this.bookingId = bookingId;
+    public void setActivityBookingId(Long activityBookingId) {
+        this.activityBookingId = activityBookingId;
     }
 
     public Activity getActivity() {

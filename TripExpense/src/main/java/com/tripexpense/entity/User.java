@@ -32,7 +32,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     @NotBlank(message = "Contraseña es obligatoria")
     @Size(min = 7, message = "La contraseña debe tener al menos 7 caracteres")
-    private String password;
+    private String password;    
 
     @Column(name = "first_name", nullable = false)
     @NotBlank(message = "Nombre es obligatorio")

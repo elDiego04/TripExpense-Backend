@@ -20,6 +20,10 @@ public class FlightBooking {
     @JoinColumn(name = "flight_id", nullable = false)
     private Flight flight;
 
+    @NotNull(message = "El usuario es obligatorio")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @NotNull
     @PositiveOrZero(message = "El precio no puede ser negativo")
     private Double price;
@@ -42,9 +46,10 @@ public class FlightBooking {
 
     public FlightBooking() {}
 
-    public FlightBooking(Long id, Flight flight, Double price, Integer adults, Integer children, FlightClass flightClass, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public FlightBooking(Long id, Flight flight, User user, Double price, Integer adults, Integer children, FlightClass flightClass, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.flight = flight;
+        this.user = user;
         this.price = price;
         this.adults = adults;
         this.children = children;
@@ -67,6 +72,14 @@ public class FlightBooking {
 
     public void setFlight(Flight flight) {
         this.flight = flight;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public Double getPrice() {
