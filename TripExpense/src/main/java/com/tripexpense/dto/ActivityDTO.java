@@ -1,6 +1,5 @@
 package com.tripexpense.dto;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -15,7 +14,6 @@ public class ActivityDTO {
     @NotNull
     private Long cityId;
 
-    @Column(length = 1000)
     private String description;
 
     @Size(max = 255)
