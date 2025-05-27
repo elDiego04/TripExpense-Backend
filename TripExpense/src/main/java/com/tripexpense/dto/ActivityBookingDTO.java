@@ -1,42 +1,47 @@
 package com.tripexpense.dto;
 
 import jakarta.validation.constraints.*;
-import java.time.LocalDate;
-import java.util.List;
+
+import java.time.LocalDateTime;
 
 public class ActivityBookingDTO {
 
-    private Long id;
-
-    @NotNull
+    private Long activityBookingId;
+    @NotNull(message = "El ID de la actividad es obligatorio")
     private Long activityId;
 
-    private List<LocalDate> availabilityDates;
+    @NotNull(message = "El ID del usuario es obligatorio")
+    private Long userId;
 
-    @NotNull
-    @Min(1)
-    private Integer minPeople;
+    @NotNull(message = "Debe indicar el número de personas")
+    @Min(value = 1, message = "Debe haber al menos una persona")
+    private Integer numberOfPeople;
 
-    @NotNull
-    @Min(1)
-    private Integer maxPeople;
+    @NotNull(message = "La fecha de reserva es obligatoria")
+    @Future(message = "La fecha de reserva debe ser en el futuro")
+    private LocalDateTime bookingDate;
 
-    public ActivityBookingDTO() {}
+    @NotNull(message = "El precio total es obligatorio")
+    @Positive(message = "El precio total debe ser mayor que cero")
+    private Double totalPrice;
 
-    public ActivityBookingDTO(Long id, Long activityId, List<LocalDate> availabilityDates, Integer minPeople, Integer maxPeople) {
-        this.id = id;
+    public ActivityBookingDTO(){}
+
+    public ActivityBookingDTO(Long activityBookingId, Long activityId, Long userId, Integer numberOfPeople, LocalDateTime bookingDate, Double totalPrice) {
+        this.activityBookingId = activityBookingId;
         this.activityId = activityId;
-        this.availabilityDates = availabilityDates;
-        this.minPeople = minPeople;
-        this.maxPeople = maxPeople;
+        this.userId = userId;
+        this.numberOfPeople = numberOfPeople;
+        this.bookingDate = bookingDate;
+        this.totalPrice = totalPrice;
     }
 
-    public Long getId() {
-        return id;
+    public Long getActivityBookingId() {
+        return activityBookingId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setActivityBookingId(Long activityBookingId) {
+        this.activityBookingId = activityBookingId;
     }
 
     public Long getActivityId() {
@@ -47,27 +52,35 @@ public class ActivityBookingDTO {
         this.activityId = activityId;
     }
 
-    public List<LocalDate> getAvailabilityDates() {
-        return availabilityDates;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setAvailabilityDates(List<LocalDate> availabilityDates) {
-        this.availabilityDates = availabilityDates;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Integer getMinPeople() {
-        return minPeople;
+    public Integer getNumberOfPeople() {
+        return numberOfPeople;
     }
 
-    public void setMinPeople(Integer minPeople) {
-        this.minPeople = minPeople;
+    public void setNumberOfPeople(Integer numberOfPeople) {
+        this.numberOfPeople = numberOfPeople;
     }
 
-    public Integer getMaxPeople() {
-        return maxPeople;
+    public LocalDateTime getBookingDate() {
+        return bookingDate;
     }
 
-    public void setMaxPeople(Integer maxPeople) {
-        this.maxPeople = maxPeople;
+    public void setBookingDate(LocalDateTime bookingDate) {
+        this.bookingDate = bookingDate;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

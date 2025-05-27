@@ -1,12 +1,11 @@
 package com.tripexpense.controller;
 
 import com.tripexpense.dto.TravelPackageDTO;
-import com.tripexpense.enums.PackageType;
-import com.tripexpense.service.interfac.TravelPackageService;
+import com.tripexpense.repository.TravelPackageRepository;
+import com.tripexpense.service.impl.TravelPackageServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,63 +14,73 @@ import java.util.List;
 @RequestMapping("/api/travel-packages")
 public class TravelPackageController {
 
-    private final TravelPackageService travelPackageService;
-
-    @Autowired
-    public TravelPackageController(TravelPackageService travelPackageService) {
-        this.travelPackageService = travelPackageService;
-    }
+    @Autowired private TravelPackageServiceImpl travelPackageService;
+    @Autowired private TravelPackageRepository travelPackageRepository;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<TravelPackageDTO> createTravelPackage(@RequestBody TravelPackageDTO travelPackageDTO) {
-        TravelPackageDTO createdPackage = travelPackageService.createTravelPackage(travelPackageDTO);
-        return new ResponseEntity<>(createdPackage, HttpStatus.CREATED);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<TravelPackageDTO> getTravelPackageById(@PathVariable Long id) {
-        TravelPackageDTO travelPackage = travelPackageService.getTravelPackageById(id);
-        return ResponseEntity.ok(travelPackage);
+    public ResponseEntity<?> createTravelPackage(@RequestBody TravelPackageDTO dto) {
+        try {
+            TravelPackageDTO created = travelPackageService.createTravelPackage(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al crear el paquete: " + e.getMessage());
+        }
     }
 
     @GetMapping
-    public ResponseEntity<List<TravelPackageDTO>> getAllTravelPackages() {
-        List<TravelPackageDTO> packages = travelPackageService.getAllTravelPackages();
-        return ResponseEntity.ok(packages);
+    public ResponseEntity<?> getAllTravelPackages() {
+        try {
+            List<TravelPackageDTO> list = travelPackageService.getAllTravelPackages();
+            if (list.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No hay paquetes registrados.");
+            }
+            return ResponseEntity.ok(list);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al obtener los paquetes: " + e.getMessage());
+        }
     }
 
-    @GetMapping("/destination/{cityId}")
-    public ResponseEntity<List<TravelPackageDTO>> getTravelPackagesByDestination(@PathVariable Long cityId) {
-        List<TravelPackageDTO> packages = travelPackageService.getTravelPackagesByDestination(cityId);
-        return ResponseEntity.ok(packages);
-    }
-
-    @GetMapping("/type/{type}")
-    public ResponseEntity<List<TravelPackageDTO>> getTravelPackagesByType(@PathVariable PackageType type) {
-        List<TravelPackageDTO> packages = travelPackageService.getTravelPackagesByType(type);
-        return ResponseEntity.ok(packages);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<TravelPackageDTO>> searchTravelPackages(@RequestParam String query) {
-        List<TravelPackageDTO> packages = travelPackageService.searchTravelPackages(query);
-        return ResponseEntity.ok(packages);
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            TravelPackageDTO dto = travelPackageService.getTravelPackageById(id);
+            if (dto == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paquete no encontrado.");
+            }
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al obtener el paquete: " + e.getMessage());
+        }
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<TravelPackageDTO> updateTravelPackage(
-            @PathVariable Long id,
-            @RequestBody TravelPackageDTO travelPackageDTO) {
-        TravelPackageDTO updatedPackage = travelPackageService.updateTravelPackage(id, travelPackageDTO);
-        return ResponseEntity.ok(updatedPackage);
+    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody TravelPackageDTO dto) {
+        try {
+            TravelPackageDTO updated = travelPackageService.updateTravelPackage(id, dto);
+            if (updated == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paquete no encontrado.");
+            }
+            return ResponseEntity.ok(updated);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al actualizar el paquete: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<Void> deleteTravelPackage(@PathVariable Long id) {
-        travelPackageService.deleteTravelPackage(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        try {
+            if (!travelPackageRepository.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paquete no encontrado.");
+            }
+            travelPackageService.deleteTravelPackage(id);
+            return ResponseEntity.ok("Paquete eliminado exitosamente.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al eliminar el paquete: " + e.getMessage());
+        }
     }
 }

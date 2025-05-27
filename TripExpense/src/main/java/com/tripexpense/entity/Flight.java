@@ -45,12 +45,9 @@ public class Flight {
     @Positive(message = "La duración debe ser positiva")
     private Integer durationMinutes;
 
-    @OneToOne(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private FlightBooking booking;
-
     public Flight() {}
 
-    public Flight(Long flightId, String airline, String airlineLogoUrl, String flightNumber, City departureCity, City arrivalCity, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime, Integer durationMinutes, FlightBooking booking) {
+    public Flight(Long flightId, String airline, String airlineLogoUrl, String flightNumber, City departureCity, City arrivalCity, LocalDateTime departureDateTime, LocalDateTime arrivalDateTime, Integer durationMinutes) {
         this.flightId = flightId;
         this.airline = airline;
         this.airlineLogoUrl = airlineLogoUrl;
@@ -60,7 +57,6 @@ public class Flight {
         this.departureDateTime = departureDateTime;
         this.arrivalDateTime = arrivalDateTime;
         this.durationMinutes = durationMinutes;
-        this.booking = booking;
     }
 
     public Long getFlightId() {
@@ -133,13 +129,5 @@ public class Flight {
 
     public void setDurationMinutes(Integer durationMinutes) {
         this.durationMinutes = durationMinutes;
-    }
-
-    public FlightBooking getBooking() {
-        return booking;
-    }
-
-    public void setBooking(FlightBooking booking) {
-        this.booking = booking;
     }
 }

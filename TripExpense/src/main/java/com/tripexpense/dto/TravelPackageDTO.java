@@ -1,13 +1,7 @@
 package com.tripexpense.dto;
 
-import com.tripexpense.entity.Activity;
-import com.tripexpense.entity.City;
-import com.tripexpense.entity.Flight;
-import com.tripexpense.entity.Hotel;
 import com.tripexpense.enums.PackageType;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.URL;
 
 import java.util.List;
 
@@ -16,61 +10,54 @@ public class TravelPackageDTO {
     private Long travelPackageId;
 
     @NotBlank(message = "El nombre del paquete es obligatorio")
-    @Size(max = 100, message = "El nombre no puede exceder los 100 caracteres")
     private String name;
 
-    @Column(columnDefinition = "TEXT")
+    @NotBlank(message = "La descripción es obligatoria")
     private String description;
 
-    @Size(max = 255)
-    @URL(message = "La URL de la imagen debe ser válida")
+    @NotBlank(message = "La URL de la imagen es obligatoria")
     private String imageUrl;
 
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "destination_city_id")
-    private City destination;
+    @NotNull(message = "La ciudad de destino es obligatoria")
+    private Long destinationCityId;
 
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "El precio base es obligatorio")
+    @Positive(message = "El precio base debe ser mayor a 0")
     private Double basePrice;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "La duración es obligatoria")
+    @Positive(message = "La duración debe ser mayor a 0")
     private Integer durationDays;
 
-    @ManyToOne
-    @JoinColumn(name = "included_flight_id")
-    private Flight includedFlight;
+    @NotNull(message = "Debe incluir un vuelo")
+    private Long includedFlightId;
 
-    @ManyToOne
-    @JoinColumn(name = "included_hotel_id")
-    private Hotel includedHotel;
+    @NotNull(message = "Debe incluir un hotel")
+    private Long includedHotelId;
 
-    @ManyToMany
-    @JoinTable(
-            name = "package_activities",
-            joinColumns = @JoinColumn(name = "package_id"),
-            inverseJoinColumns = @JoinColumn(name = "activity_id"))
-    private List<Activity> includedActivities;
+    @NotNull(message = "Debe incluir al menos una actividad")
+    @Size(min = 1, message = "Debe incluir al menos una actividad")
+    private List<Long> includedActivityIds;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
+    @NotNull(message = "El tipo de paquete es obligatorio")
     private PackageType type;
 
-    public TravelPackageDTO(){}
+    public TravelPackageDTO() {}
 
-    public TravelPackageDTO(Long travelPackageId, String name, String description, String imageUrl, City destination, Double basePrice, Integer durationDays, Flight includedFlight, Hotel includedHotel, List<Activity> includedActivities, PackageType type) {
+    public TravelPackageDTO(Long travelPackageId, String name, String description, String imageUrl,
+                            Long destinationCityId, Double basePrice, Integer durationDays,
+                            Long includedFlightId, Long includedHotelId, List<Long> includedActivityIds,
+                            PackageType type) {
         this.travelPackageId = travelPackageId;
         this.name = name;
         this.description = description;
         this.imageUrl = imageUrl;
-        this.destination = destination;
+        this.destinationCityId = destinationCityId;
         this.basePrice = basePrice;
         this.durationDays = durationDays;
-        this.includedFlight = includedFlight;
-        this.includedHotel = includedHotel;
-        this.includedActivities = includedActivities;
+        this.includedFlightId = includedFlightId;
+        this.includedHotelId = includedHotelId;
+        this.includedActivityIds = includedActivityIds;
         this.type = type;
     }
 
@@ -106,12 +93,12 @@ public class TravelPackageDTO {
         this.imageUrl = imageUrl;
     }
 
-    public City getDestination() {
-        return destination;
+    public Long getDestinationCityId() {
+        return destinationCityId;
     }
 
-    public void setDestination(City destination) {
-        this.destination = destination;
+    public void setDestinationCityId(Long destinationCityId) {
+        this.destinationCityId = destinationCityId;
     }
 
     public Double getBasePrice() {
@@ -130,28 +117,28 @@ public class TravelPackageDTO {
         this.durationDays = durationDays;
     }
 
-    public Flight getIncludedFlight() {
-        return includedFlight;
+    public Long getIncludedFlightId() {
+        return includedFlightId;
     }
 
-    public void setIncludedFlight(Flight includedFlight) {
-        this.includedFlight = includedFlight;
+    public void setIncludedFlightId(Long includedFlightId) {
+        this.includedFlightId = includedFlightId;
     }
 
-    public Hotel getIncludedHotel() {
-        return includedHotel;
+    public Long getIncludedHotelId() {
+        return includedHotelId;
     }
 
-    public void setIncludedHotel(Hotel includedHotel) {
-        this.includedHotel = includedHotel;
+    public void setIncludedHotelId(Long includedHotelId) {
+        this.includedHotelId = includedHotelId;
     }
 
-    public List<Activity> getIncludedActivities() {
-        return includedActivities;
+    public List<Long> getIncludedActivityIds() {
+        return includedActivityIds;
     }
 
-    public void setIncludedActivities(List<Activity> includedActivities) {
-        this.includedActivities = includedActivities;
+    public void setIncludedActivityIds(List<Long> includedActivityIds) {
+        this.includedActivityIds = includedActivityIds;
     }
 
     public PackageType getType() {

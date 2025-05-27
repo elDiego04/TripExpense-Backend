@@ -1,5 +1,6 @@
 package com.tripexpense.dto;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 
@@ -13,6 +14,9 @@ public class ActivityDTO {
 
     @NotNull
     private Long cityId;
+
+    @Column(length = 1000)
+    private String description;
 
     @Size(max = 255)
     @URL(message = "La URL de la imagen debe ser válida")
@@ -39,11 +43,12 @@ public class ActivityDTO {
 
     public ActivityDTO() {}
 
-    public ActivityDTO(Long activityId, String name, Long cityId, String imageUrl, String category, Integer duration, String location, String difficultyLevel, Double price) {
+    public ActivityDTO(Long activityId, String name, Long cityId, String imageUrl, String description ,String category, Integer duration, String location, String difficultyLevel, Double price) {
         this.activityId = activityId;
         this.name = name;
         this.cityId = cityId;
         this.imageUrl = imageUrl;
+        this.description = description;
         this.category = category;
         this.duration = duration;
         this.location = location;
@@ -81,6 +86,14 @@ public class ActivityDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getCategory() {
